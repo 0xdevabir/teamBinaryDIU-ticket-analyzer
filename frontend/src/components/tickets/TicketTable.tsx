@@ -27,7 +27,7 @@ export default function TicketTable({ tickets, compact = false }: Props) {
     <div className="overflow-x-auto">
       <table className="w-full min-w-[640px] text-left text-sm">
         <thead>
-          <tr className="border-b border-slate-100 text-xs font-semibold uppercase tracking-wider text-slate-400">
+          <tr className="border-b border-slate-100 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:border-slate-800">
             <th className="px-4 py-3">Title</th>
             <th className="px-4 py-3">Category</th>
             <th className="px-4 py-3">Priority</th>
@@ -37,18 +37,18 @@ export default function TicketTable({ tickets, compact = false }: Props) {
             <th className="px-4 py-3" />
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-50">
+        <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
           {tickets.map((ticket) => {
             const analyzed = Boolean(ticket.category);
             return (
               <tr
                 key={ticket.id}
-                className="group transition-colors hover:bg-slate-50/80"
+                className="group transition-colors hover:bg-slate-50/80 dark:hover:bg-slate-800/50"
               >
                 <td className="px-4 py-3.5">
                   <Link
                     to={`/tickets/${ticket.id}`}
-                    className="font-medium text-slate-900 hover:text-brand-600"
+                    className="font-medium text-slate-900 hover:text-brand-600 dark:text-slate-100 dark:hover:text-brand-400"
                   >
                     <span className="line-clamp-1">{ticket.title}</span>
                   </Link>

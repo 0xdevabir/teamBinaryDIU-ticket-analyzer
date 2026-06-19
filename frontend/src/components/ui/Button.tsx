@@ -2,11 +2,11 @@ import type { ButtonHTMLAttributes } from "react";
 
 const variants = {
   primary:
-    "bg-brand-600 text-white hover:bg-brand-700 shadow-sm shadow-brand-600/20",
+    "bg-brand-600 text-white hover:bg-brand-700 shadow-sm shadow-brand-600/20 dark:bg-brand-600 dark:hover:bg-brand-500",
   secondary:
-    "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-sm",
+    "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-sm dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-700",
   danger: "bg-red-600 text-white hover:bg-red-700 shadow-sm",
-  ghost: "text-slate-600 hover:bg-slate-100",
+  ghost: "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800",
 };
 
 const sizes = {

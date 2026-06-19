@@ -19,4 +19,9 @@ export const ticketsApi = {
 
   analyze: (id: string) =>
     http.post<TicketAnalyzeResponse>(`/tickets/${id}/analyze`).then((r) => r.data),
+
+  exportCsv: (params?: Record<string, string>) =>
+    http
+      .get("/tickets/export", { params, responseType: "blob" })
+      .then((r) => r.data as Blob),
 };

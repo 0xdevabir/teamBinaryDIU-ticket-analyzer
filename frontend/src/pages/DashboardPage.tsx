@@ -4,7 +4,8 @@ import { Database, ArrowRight } from "lucide-react";
 import { useDashboard } from "../hooks/useDashboard";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useToast } from "../context/ToastContext";
-import StatsCards from "../components/dashboard/StatsCards";
+import StatsOverview from "../components/dashboard/StatsOverview";
+import DistributionChart from "../components/dashboard/DistributionChart";
 import BarChart from "../components/dashboard/BarChart";
 import DemoBanner from "../components/dashboard/DemoBanner";
 import TicketTable from "../components/tickets/TicketTable";
@@ -20,7 +21,7 @@ export default function DashboardPage() {
   const { toast } = useToast();
   const [seeding, setSeeding] = useState(false);
 
-  useDocumentTitle("Dashboard");
+  useDocumentTitle("Statistics Dashboard");
 
   async function handleSeed() {
     setSeeding(true);
@@ -35,14 +36,15 @@ export default function DashboardPage() {
   }
 
   if (loading) return <Spinner label="Loading dashboard..." />;
+  if (!stats) return null;
 
-  const hasTickets = (stats?.total_tickets ?? 0) > 0;
+  const hasTickets = stats.total_tickets > 0;
 
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Dashboard"
-        description="AI-powered support ticket insights at a glance"
+        title="Statistics Dashboard"
+        description="Ticket metrics, category & priority distribution"
         action={
           <Button variant="secondary" onClick={handleSeed} disabled={seeding}>
             <Database size={16} />
@@ -54,30 +56,37 @@ export default function DashboardPage() {
       <DemoBanner onSeed={handleSeed} seeding={seeding} hasTickets={hasTickets} />
 
       {error && (
-        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+          {error}
+        </p>
       )}
 
-      <StatsCards
-        total={stats?.total_tickets ?? 0}
-        analyzedToday={stats?.analyzed_today ?? 0}
-        avgConfidence={stats?.avg_confidence}
-      />
+      <StatsOverview stats={stats} />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
-          <BarChart title="By Category" data={stats?.by_category ?? {}} />
+          <DistributionChart title="Category Distribution" data={stats.by_category} type="category" />
         </Card>
         <Card>
-          <BarChart title="By Priority" data={stats?.by_priority ?? {}} />
+          <DistributionChart title="Priority Distribution" data={stats.by_priority} type="priority" />
+        </Card>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
+          <BarChart title="Category Breakdown" data={stats.by_category} />
+        </Card>
+        <Card>
+          <BarChart title="Priority Breakdown" data={stats.by_priority} />
         </Card>
       </div>
 
       <section>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">Recent Tickets</h2>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Recent Tickets</h2>
           <Link
             to="/tickets"
-            className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 hover:text-brand-700"
+            className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400"
           >
             View all
             <ArrowRight size={14} />

@@ -30,7 +30,10 @@ export interface TicketListResponse {
 
 export interface DashboardStats {
   total_tickets: number;
+  analyzed_total: number;
+  pending_total: number;
   analyzed_today: number;
+  analysis_rate: number;
   by_category: Record<string, number>;
   by_priority: Record<string, number>;
   avg_confidence?: number | null;

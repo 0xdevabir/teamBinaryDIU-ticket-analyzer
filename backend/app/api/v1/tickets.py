@@ -1,6 +1,9 @@
+import csv
+import io
 import uuid
 
 from fastapi import APIRouter, Depends, Query, Response, status
+from fastapi.responses import StreamingResponse
 
 from app.dependencies import get_analysis_service, get_ticket_service
 from app.schemas.analysis import TicketAnalyzeResponse
@@ -35,6 +38,51 @@ async def list_tickets(
         search=search,
     )
     return TicketListResponse(items=items, total=total, page=page, page_size=page_size)
+
+
+@router.get("/export")
+async def export_tickets(
+    analyzed: bool | None = None,
+    category: str | None = None,
+    priority: str | None = None,
+    search: str | None = None,
+    service: TicketService = Depends(get_ticket_service),
+):
+    items, _ = await service.list(
+        page=1,
+        page_size=10_000,
+        analyzed=analyzed,
+        category=category,
+        priority=priority,
+        search=search,
+    )
+
+    buffer = io.StringIO()
+    writer = csv.writer(buffer)
+    writer.writerow(
+        ["id", "title", "description", "category", "priority", "summary", "ai_confidence", "created_at", "updated_at"]
+    )
+    for t in items:
+        writer.writerow(
+            [
+                str(t.id),
+                t.title,
+                t.description,
+                t.category or "",
+                t.priority or "",
+                t.summary or "",
+                float(t.ai_confidence) if t.ai_confidence is not None else "",
+                t.created_at.isoformat() if t.created_at else "",
+                t.updated_at.isoformat() if t.updated_at else "",
+            ]
+        )
+
+    buffer.seek(0)
+    return StreamingResponse(
+        iter([buffer.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=tickets-export.csv"},
+    )
 
 
 @router.get("/{ticket_id}", response_model=TicketResponse)
