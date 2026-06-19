@@ -678,6 +678,8 @@ Full design document: [`backend/app/ai/AI_DESIGN.md`](backend/app/ai/AI_DESIGN.m
 
 ## Demo Flow
 
+See **[docs/COMPETITION_REVIEW.md](docs/COMPETITION_REVIEW.md)** for judge evaluation and a 2-minute demo script.
+
 1. Open the dashboard at http://localhost (or your deployed domain)
 2. Click **Load Demo Data** or create a ticket manually
 3. Submit: *"URGENT: Payment failed but money was deducted from my card"*

@@ -119,10 +119,21 @@ class TicketRepository:
             )
         ).scalar_one()
 
+        analyzed_total = (
+            await self.db.execute(
+                select(func.count()).select_from(Ticket).where(Ticket.category.is_not(None))
+            )
+        ).scalar_one()
+        pending_total = total - analyzed_total
+        analysis_rate = round((analyzed_total / total * 100) if total > 0 else 0.0, 1)
+
         return DashboardStats(
             total_tickets=total,
+            analyzed_total=analyzed_total,
+            pending_total=pending_total,
             analyzed_today=analyzed_today,
-            by_category={row[0]: row[1] for row in category_rows},
-            by_priority={row[0]: row[1] for row in priority_rows},
+            analysis_rate=analysis_rate,
+            by_category={str(row[0]): row[1] for row in category_rows},
+            by_priority={str(row[0]): row[1] for row in priority_rows},
             avg_confidence=float(avg_confidence) if avg_confidence is not None else None,
         )
