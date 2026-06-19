@@ -32,7 +32,8 @@ RUN pip install --upgrade pip \
     && pip install torch --index-url https://download.pytorch.org/whl/cpu \
     && pip install -r requirements.txt
 
-COPY alembic.ini alembic/ ./
+COPY alembic.ini ./
+COPY alembic ./alembic
 COPY app/ ./app/
 COPY scripts/wait_for_db.py scripts/docker-entrypoint.sh ./scripts/
 RUN chmod +x ./scripts/docker-entrypoint.sh \
