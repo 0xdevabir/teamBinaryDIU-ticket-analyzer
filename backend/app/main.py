@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -15,17 +16,25 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+async def _preload_models_background() -> None:
+    try:
+        from app.ai.model_registry import preload_models
+
+        await asyncio.to_thread(preload_models)
+        logger.info("AI models preloaded (mode=%s)", settings.ai_inference_mode)
+    except Exception as exc:
+        logger.warning("AI model preload skipped: %s", exc)
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     logger.info("Starting %s v%s", settings.app_name, settings.app_version)
-    if settings.ai_inference_mode in {"local", "auto"}:
-        try:
-            from app.ai.model_registry import preload_models
 
-            preload_models()
-            logger.info("AI models preloaded (mode=%s)", settings.ai_inference_mode)
-        except Exception as exc:
-            logger.warning("AI model preload skipped: %s", exc)
+    if settings.preload_models_on_startup and settings.ai_inference_mode in {"local", "auto"}:
+        asyncio.create_task(_preload_models_background())
+    elif settings.ai_inference_mode in {"local", "auto"}:
+        logger.info("AI models will load on first request (lazy)")
+
     yield
     logger.info("Shutting down %s", settings.app_name)
 

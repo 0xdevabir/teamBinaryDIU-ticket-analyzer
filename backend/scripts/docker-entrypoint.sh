@@ -4,7 +4,7 @@ set -eu
 echo "Waiting for database..."
 for i in $(seq 1 30); do
   if python -c "
-import asyncio, os, sys
+import asyncio, os
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy import text
 
@@ -15,7 +15,7 @@ async def check():
     await engine.dispose()
 
 asyncio.run(check())
-" 2>/dev/null; then
+"; then
     echo "Database is ready."
     break
   fi
@@ -23,6 +23,7 @@ asyncio.run(check())
     echo "Database not reachable after 30 attempts." >&2
     exit 1
   fi
+  echo "  attempt $i/30..."
   sleep 2
 done
 

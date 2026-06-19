@@ -51,6 +51,7 @@ services:
       HF_SUMMARIZATION_MODEL: ${HF_SUMMARIZATION_MODEL:-sshleifer/distilbart-cnn-12-6}
       AI_REQUEST_TIMEOUT: ${AI_REQUEST_TIMEOUT:-30}
       SEED_ENABLED: ${SEED_ENABLED:-true}
+      PRELOAD_MODELS_ON_STARTUP: ${PRELOAD_MODELS_ON_STARTUP:-false}
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     depends_on:
@@ -62,18 +63,18 @@ services:
           "CMD",
           "python",
           "-c",
-          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready', timeout=5)",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=5)",
         ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 90s
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 60s
     networks:
       - ticket-net
     deploy:
       resources:
         limits:
-          memory: 2G
+          memory: 3G
 
   frontend:
     build:
