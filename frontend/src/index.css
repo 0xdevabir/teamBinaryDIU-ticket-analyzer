@@ -4,19 +4,24 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+    @apply bg-slate-50 text-slate-900 antialiased;
+  }
+  .dark body {
+    @apply bg-slate-950 text-slate-100;
   }
 }
 
 @layer components {
   .saas-card {
-    @apply rounded-xl border border-slate-200/80 bg-white shadow-saas
-      dark:border-slate-800 dark:bg-slate-900;
+    @apply rounded-xl border border-slate-200/80 bg-white shadow-saas;
+  }
+  .dark .saas-card {
+    @apply border-slate-800 bg-slate-900;
   }
   .saas-input {
-    @apply w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm
-      placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10
-      dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500
-      dark:focus:border-brand-400 dark:focus:ring-brand-400/20;
+    @apply w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10;
+  }
+  .dark .saas-input {
+    @apply border-slate-700 bg-slate-800 text-slate-100 placeholder:text-slate-500 focus:border-brand-500 focus:ring-brand-500/20;
   }
 }
