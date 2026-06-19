@@ -4,6 +4,7 @@ import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.ai.result import AnalysisResult
 from app.core.exceptions import TicketNotFoundError, ValidationError
 from app.models.ticket import Ticket
 from app.repositories.ticket_repository import TicketRepository
@@ -42,6 +43,14 @@ class TicketService:
 
     async def dashboard_stats(self) -> DashboardStats:
         return await self.repo.dashboard_stats()
+
+    async def seed_demo(self, demos: list[tuple[TicketCreate, AnalysisResult]]) -> list[Ticket]:
+        created: list[Ticket] = []
+        for data, analysis in demos:
+            ticket = await self.repo.create(data)
+            ticket = await self.repo.apply_analysis(ticket, analysis)
+            created.append(ticket)
+        return created
 
     async def get_categories(self) -> list[str]:
         from app.config import settings
