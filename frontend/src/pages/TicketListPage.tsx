@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { useTickets } from "../hooks/useTickets";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import type { TicketFilters as Filters } from "../types/ticket";
 import TicketFiltersBar from "../components/tickets/TicketFilters";
 import TicketTable from "../components/tickets/TicketTable";
+import TicketCard from "../components/tickets/TicketCard";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import PageHeader from "../components/ui/PageHeader";
@@ -15,6 +17,8 @@ export default function TicketListPage() {
   const [draft, setDraft] = useState<Filters>({ page: 1, page_size: 10 });
   const [applied, setApplied] = useState<Filters>({ page: 1, page_size: 10 });
   const { tickets, total, loading, error } = useTickets(applied);
+
+  useDocumentTitle("Tickets");
 
   const totalPages = Math.max(1, Math.ceil(total / (applied.page_size ?? 10)));
 
@@ -52,13 +56,19 @@ export default function TicketListPage() {
       ) : (
         <>
           <div className="flex items-center justify-between text-sm text-slate-500">
-            <span>
-              Showing {tickets.length} of {total} tickets
-            </span>
+            <span>Showing {tickets.length} of {total} tickets</span>
           </div>
-          <Card padding={false}>
+
+          <div className="grid gap-4 md:hidden">
+            {tickets.map((t) => (
+              <TicketCard key={t.id} ticket={t} />
+            ))}
+          </div>
+
+          <Card padding={false} className="hidden md:block">
             <TicketTable tickets={tickets} />
           </Card>
+
           <div className="flex items-center justify-center gap-4 pt-2">
             <Button
               variant="secondary"

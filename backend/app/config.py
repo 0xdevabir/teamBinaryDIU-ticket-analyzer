@@ -22,7 +22,6 @@ class Settings(BaseSettings):
     # AI
     ai_inference_mode: str = "auto"
     seed_enabled: bool = True
-    hf_api_token: str = ""
     hf_zero_shot_model: str = "typeform/distilbert-base-uncased-mnli"
     hf_summarization_model: str = "sshleifer/distilbart-cnn-12-6"
     ai_request_timeout: int = 30

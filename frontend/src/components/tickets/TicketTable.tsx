@@ -108,7 +108,7 @@ export default function TicketTable({ tickets, compact = false }: Props) {
                 <td className="px-4 py-3.5">
                   <Link
                     to={`/tickets/${ticket.id}`}
-                    className="inline-flex items-center gap-1 text-xs font-medium text-brand-600 opacity-0 transition-opacity group-hover:opacity-100"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-brand-600 md:opacity-0 md:transition-opacity md:group-hover:opacity-100"
                   >
                     View
                     <ArrowUpRight size={12} />

@@ -50,6 +50,7 @@ services:
       HF_ZERO_SHOT_MODEL: ${HF_ZERO_SHOT_MODEL:-typeform/distilbert-base-uncased-mnli}
       HF_SUMMARIZATION_MODEL: ${HF_SUMMARIZATION_MODEL:-sshleifer/distilbart-cnn-12-6}
       AI_REQUEST_TIMEOUT: ${AI_REQUEST_TIMEOUT:-30}
+      SEED_ENABLED: ${SEED_ENABLED:-true}
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     depends_on:

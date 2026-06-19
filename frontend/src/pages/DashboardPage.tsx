@@ -2,9 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Database, ArrowRight } from "lucide-react";
 import { useDashboard } from "../hooks/useDashboard";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import { useToast } from "../context/ToastContext";
 import StatsCards from "../components/dashboard/StatsCards";
 import BarChart from "../components/dashboard/BarChart";
+import DemoBanner from "../components/dashboard/DemoBanner";
 import TicketTable from "../components/tickets/TicketTable";
+import TicketCard from "../components/tickets/TicketCard";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import PageHeader from "../components/ui/PageHeader";
@@ -13,18 +17,26 @@ import EmptyState from "../components/ui/EmptyState";
 
 export default function DashboardPage() {
   const { stats, recent, loading, error, seed } = useDashboard();
+  const { toast } = useToast();
   const [seeding, setSeeding] = useState(false);
+
+  useDocumentTitle("Dashboard");
 
   async function handleSeed() {
     setSeeding(true);
     try {
       await seed();
+      toast("Demo tickets loaded and analyzed", "success");
+    } catch {
+      toast("Failed to load demo data", "error");
     } finally {
       setSeeding(false);
     }
   }
 
   if (loading) return <Spinner label="Loading dashboard..." />;
+
+  const hasTickets = (stats?.total_tickets ?? 0) > 0;
 
   return (
     <div className="space-y-8">
@@ -38,6 +50,8 @@ export default function DashboardPage() {
           </Button>
         }
       />
+
+      <DemoBanner onSeed={handleSeed} seeding={seeding} hasTickets={hasTickets} />
 
       {error && (
         <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
@@ -82,9 +96,16 @@ export default function DashboardPage() {
             />
           </Card>
         ) : (
-          <Card padding={false}>
-            <TicketTable tickets={recent} compact />
-          </Card>
+          <>
+            <div className="grid gap-4 md:hidden">
+              {recent.map((t) => (
+                <TicketCard key={t.id} ticket={t} />
+              ))}
+            </div>
+            <Card padding={false} className="hidden md:block">
+              <TicketTable tickets={recent} compact />
+            </Card>
+          </>
         )}
       </section>
     </div>

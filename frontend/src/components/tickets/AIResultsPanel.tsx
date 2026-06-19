@@ -1,7 +1,13 @@
-import { Brain, Sparkles, Tag, AlertTriangle } from "lucide-react";
+import { Brain, Sparkles, Tag, AlertTriangle, Cpu, Clock } from "lucide-react";
 import type { AIResultView } from "../../types/ai";
 import Badge from "../ui/Badge";
 import Card from "../ui/Card";
+
+const SOURCE_LABELS: Record<string, string> = {
+  local: "Local CPU (DistilBERT + DistilBART)",
+  api: "Hugging Face Inference API",
+  fallback: "Keyword fallback",
+};
 
 export default function AIResultsPanel({ result }: { result: AIResultView }) {
   const confidencePct = Math.round(result.confidence * 100);
@@ -9,14 +15,24 @@ export default function AIResultsPanel({ result }: { result: AIResultView }) {
   return (
     <Card className="overflow-hidden p-0">
       <div className="bg-gradient-to-br from-brand-600 via-brand-600 to-violet-600 px-6 py-6 text-white">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 backdrop-blur">
-            <Sparkles size={18} />
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 backdrop-blur">
+              <Sparkles size={18} />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold">AI Analysis Results</h2>
+              <p className="text-sm text-brand-100">
+                {SOURCE_LABELS[result.inference_source ?? "fallback"] ?? "ML inference"}
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-lg font-semibold">AI Analysis Results</h2>
-            <p className="text-sm text-brand-100">DistilBERT + DistilBART · CPU inference</p>
-          </div>
+          {result.processing_ms != null && (
+            <div className="flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium">
+              <Clock size={12} />
+              {result.processing_ms}ms
+            </div>
+          )}
         </div>
       </div>
 
@@ -65,10 +81,24 @@ export default function AIResultsPanel({ result }: { result: AIResultView }) {
               style={{ width: `${confidencePct}%` }}
             />
           </div>
-          <p className="mt-2 text-xs text-slate-400">
-            Model confidence in category and priority classification
-          </p>
+          {result.confidence_breakdown && Object.keys(result.confidence_breakdown).length > 0 && (
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              {Object.entries(result.confidence_breakdown).map(([key, val]) => (
+                <div key={key} className="rounded-md bg-slate-50 px-2 py-1.5 text-center">
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400">{key}</p>
+                  <p className="text-sm font-semibold text-slate-700">{Math.round(val * 100)}%</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
+
+        {result.inference_source && (
+          <div className="flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-4 py-3 text-xs text-slate-500">
+            <Cpu size={14} />
+            Inference engine: <span className="font-medium text-slate-700">{result.inference_source}</span>
+          </div>
+        )}
       </div>
     </Card>
   );
