@@ -1,22 +1,22 @@
 const categoryColors: Record<string, string> = {
-  Billing: "bg-violet-50 text-violet-700 ring-violet-600/20",
-  Technical: "bg-blue-50 text-blue-700 ring-blue-600/20",
-  Account: "bg-cyan-50 text-cyan-700 ring-cyan-600/20",
-  Authentication: "bg-cyan-50 text-cyan-700 ring-cyan-600/20",
-  "Feature Request": "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-  General: "bg-slate-50 text-slate-600 ring-slate-500/20",
-  Other: "bg-slate-50 text-slate-600 ring-slate-500/20",
+  Billing: "bg-neutral-100 text-neutral-800 ring-neutral-300/40 dark:bg-neutral-800 dark:text-neutral-200",
+  Technical: "bg-neutral-200 text-neutral-900 ring-neutral-400/40 dark:bg-neutral-700 dark:text-white",
+  Account: "bg-neutral-100 text-neutral-700 ring-neutral-300/40 dark:bg-neutral-800 dark:text-neutral-300",
+  Authentication: "bg-neutral-100 text-neutral-700 ring-neutral-300/40",
+  "Feature Request": "bg-white text-neutral-800 ring-neutral-400 dark:bg-neutral-900 dark:text-neutral-200",
+  General: "bg-neutral-50 text-neutral-600 ring-neutral-200",
+  Other: "bg-neutral-50 text-neutral-600 ring-neutral-200",
 };
 
 const priorityColors: Record<string, string> = {
-  Critical: "bg-red-50 text-red-700 ring-red-600/20",
-  High: "bg-orange-50 text-orange-700 ring-orange-600/20",
-  Medium: "bg-amber-50 text-amber-700 ring-amber-600/20",
-  Low: "bg-green-50 text-green-700 ring-green-600/20",
-  critical: "bg-red-50 text-red-700 ring-red-600/20",
-  high: "bg-orange-50 text-orange-700 ring-orange-600/20",
-  medium: "bg-amber-50 text-amber-700 ring-amber-600/20",
-  low: "bg-green-50 text-green-700 ring-green-600/20",
+  Critical: "bg-neutral-900 text-white ring-neutral-700 dark:bg-white dark:text-neutral-900",
+  High: "bg-neutral-800 text-white ring-neutral-600",
+  Medium: "bg-neutral-200 text-neutral-900 ring-neutral-300",
+  Low: "bg-neutral-100 text-neutral-600 ring-neutral-200",
+  critical: "bg-neutral-900 text-white ring-neutral-700 dark:bg-white dark:text-neutral-900",
+  high: "bg-neutral-800 text-white ring-neutral-600",
+  medium: "bg-neutral-200 text-neutral-900 ring-neutral-300",
+  low: "bg-neutral-100 text-neutral-600 ring-neutral-200",
 };
 
 export default function Badge({
@@ -28,12 +28,12 @@ export default function Badge({
 }) {
   const colors =
     variant === "category"
-      ? categoryColors[label] ?? "bg-slate-50 text-slate-600 ring-slate-500/20"
-      : priorityColors[label] ?? "bg-slate-50 text-slate-600 ring-slate-500/20";
+      ? categoryColors[label] ?? "bg-neutral-50 text-neutral-600 ring-neutral-200"
+      : priorityColors[label] ?? "bg-neutral-50 text-neutral-600 ring-neutral-200";
 
   return (
     <span
-      className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${colors}`}
+      className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ring-1 ring-inset ${colors}`}
     >
       {label}
     </span>

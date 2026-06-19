@@ -3,7 +3,6 @@ import {
   LayoutDashboard,
   Ticket,
   PlusCircle,
-  Sparkles,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -20,25 +19,27 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`hidden flex-col border-r border-slate-200 bg-white transition-all dark:border-slate-800 dark:bg-slate-900 md:flex ${
+      className={`hidden flex-col border-r border-neutral-200 bg-white transition-all dark:border-neutral-800 dark:bg-neutral-950 md:flex ${
         collapsed ? "w-[72px]" : "w-60"
       }`}
     >
-      <div className="flex h-16 items-center gap-2 border-b border-slate-100 px-4 dark:border-slate-800">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand-600 to-violet-600 text-white">
-          <Sparkles size={18} />
+      <div className="flex h-16 items-center gap-3 border-b border-neutral-100 px-4 dark:border-neutral-800">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-neutral-900 text-sm font-bold text-white dark:bg-white dark:text-neutral-900">
+          T
         </div>
         {!collapsed && (
           <div>
-            <p className="text-sm font-bold text-slate-900 dark:text-slate-100">TicketAI</p>
-            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
-              Analyzer
+            <p className="text-sm font-bold tracking-tight text-neutral-900 dark:text-white">
+              Ticket Analyzer
+            </p>
+            <p className="text-[10px] font-medium uppercase tracking-widest text-neutral-400">
+              Support Desk
             </p>
           </div>
         )}
       </div>
 
-      <nav className="flex-1 space-y-1 p-3">
+      <nav className="flex-1 space-y-0.5 p-3">
         {nav.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
@@ -46,14 +47,14 @@ export default function Sidebar() {
             end={to === "/"}
             title={collapsed ? label : undefined}
             className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
+              `flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-brand-50 text-brand-700 shadow-sm dark:bg-brand-950 dark:text-brand-300"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+                  ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
+                  : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white"
               }`
             }
           >
-            <Icon size={18} className="shrink-0" />
+            <Icon size={18} className="shrink-0" strokeWidth={1.75} />
             {!collapsed && label}
           </NavLink>
         ))}
@@ -61,7 +62,7 @@ export default function Sidebar() {
 
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="m-3 flex items-center justify-center rounded-lg border border-slate-200 p-2 text-slate-400 hover:bg-slate-50 hover:text-slate-600 dark:border-slate-700 dark:hover:bg-slate-800"
+        className="m-3 flex items-center justify-center rounded-md border border-neutral-200 p-2 text-neutral-400 hover:bg-neutral-50 hover:text-neutral-700 dark:border-neutral-800 dark:hover:bg-neutral-900"
         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
         {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}

@@ -47,7 +47,7 @@ export default function TicketForm({ onSubmit, onPreview, loading, error }: Prop
       )}
       <div className="flex flex-wrap gap-3">
         <Button type="submit" disabled={loading}>
-          {loading ? "Processing..." : "Submit & Analyze"}
+          {loading ? "Processing..." : "Submit ticket"}
         </Button>
         {onPreview && (
           <Button
@@ -56,7 +56,7 @@ export default function TicketForm({ onSubmit, onPreview, loading, error }: Prop
             disabled={loading || title.length < 3 || description.length < 10}
             onClick={() => onPreview({ title, description })}
           >
-            Preview AI Only
+            Preview analysis
           </Button>
         )}
       </div>

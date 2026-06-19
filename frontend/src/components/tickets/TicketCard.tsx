@@ -8,9 +8,9 @@ export default function TicketCard({ ticket }: { ticket: Ticket }) {
 
   return (
     <Link to={`/tickets/${ticket.id}`}>
-      <Card className="transition-shadow hover:shadow-md">
+      <Card className="transition-shadow hover:shadow-saas-md">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="font-semibold text-slate-900 line-clamp-1">{ticket.title}</h3>
+          <h3 className="font-semibold text-neutral-900 line-clamp-1 dark:text-white">{ticket.title}</h3>
           {ticket.priority && <Badge label={ticket.priority} variant="priority" />}
         </div>
         <p className="mt-1 text-xs text-slate-500">

@@ -43,8 +43,8 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Statistics Dashboard"
-        description="Ticket metrics, category & priority distribution"
+        title="Dashboard"
+        description="Overview of ticket volume and distribution"
         action={
           <Button variant="secondary" onClick={handleSeed} disabled={seeding}>
             <Database size={16} />
@@ -86,7 +86,7 @@ export default function DashboardPage() {
           <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Recent Tickets</h2>
           <Link
             to="/tickets"
-            className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400"
+            className="inline-flex items-center gap-1 text-sm font-medium text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
           >
             View all
             <ArrowRight size={14} />

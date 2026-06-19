@@ -132,9 +132,9 @@ export default function TicketFiltersBar({ filters, onChange, onApply }: Props) 
 
 function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700 dark:bg-brand-950 dark:text-brand-300">
+    <span className="inline-flex items-center gap-1 rounded-md border border-neutral-200 bg-neutral-50 px-2.5 py-1 text-xs font-medium text-neutral-700 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300">
       {label}
-      <button onClick={onRemove} className="rounded-full hover:bg-brand-100 dark:hover:bg-brand-900">
+      <button onClick={onRemove} className="rounded hover:bg-neutral-200 dark:hover:bg-neutral-800">
         <X size={12} />
       </button>
     </span>

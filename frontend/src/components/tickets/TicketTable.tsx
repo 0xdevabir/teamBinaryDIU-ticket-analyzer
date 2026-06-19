@@ -48,7 +48,7 @@ export default function TicketTable({ tickets, compact = false }: Props) {
                 <td className="px-4 py-3.5">
                   <Link
                     to={`/tickets/${ticket.id}`}
-                    className="font-medium text-slate-900 hover:text-brand-600 dark:text-slate-100 dark:hover:text-brand-400"
+                    className="font-medium text-neutral-900 hover:underline dark:text-neutral-100"
                   >
                     <span className="line-clamp-1">{ticket.title}</span>
                   </Link>
@@ -78,7 +78,7 @@ export default function TicketTable({ tickets, compact = false }: Props) {
                       <div className="flex items-center gap-2">
                         <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-100">
                           <div
-                            className="h-full rounded-full bg-brand-500"
+                            className="h-full rounded-sm bg-neutral-900 dark:bg-white"
                             style={{ width: `${ticket.ai_confidence * 100}%` }}
                           />
                         </div>
@@ -93,10 +93,10 @@ export default function TicketTable({ tickets, compact = false }: Props) {
                 )}
                 <td className="px-4 py-3.5">
                   <span
-                    className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
+                    className={`inline-flex rounded-md px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${
                       analyzed
-                        ? "bg-emerald-50 text-emerald-700"
-                        : "bg-amber-50 text-amber-700"
+                        ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
+                        : "border border-neutral-200 text-neutral-600 dark:border-neutral-700 dark:text-neutral-400"
                     }`}
                   >
                     {analyzed ? "Analyzed" : "Pending"}
@@ -108,7 +108,7 @@ export default function TicketTable({ tickets, compact = false }: Props) {
                 <td className="px-4 py-3.5">
                   <Link
                     to={`/tickets/${ticket.id}`}
-                    className="inline-flex items-center gap-1 text-xs font-medium text-brand-600 md:opacity-0 md:transition-opacity md:group-hover:opacity-100"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-neutral-600 hover:text-neutral-900 md:opacity-0 md:transition-opacity md:group-hover:opacity-100 dark:text-neutral-400 dark:hover:text-white"
                   >
                     View
                     <ArrowUpRight size={12} />

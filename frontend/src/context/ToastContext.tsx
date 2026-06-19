@@ -22,9 +22,11 @@ const icons = {
 };
 
 const styles = {
-  success: "border-emerald-200 bg-emerald-50 text-emerald-800",
-  error: "border-red-200 bg-red-50 text-red-800",
-  info: "border-brand-200 bg-brand-50 text-brand-800",
+  success:
+    "border-neutral-200 bg-white text-neutral-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white",
+  error:
+    "border-red-200 bg-white text-red-800 dark:border-red-900 dark:bg-neutral-900 dark:text-red-400",
+  info: "border-neutral-200 bg-white text-neutral-800 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200",
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -47,7 +49,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           return (
             <div
               key={t.id}
-              className={`pointer-events-auto flex items-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium shadow-lg ${styles[t.type]}`}
+              className={`pointer-events-auto flex items-center gap-2 rounded-md border px-4 py-3 text-sm font-medium shadow-saas-md ${styles[t.type]}`}
             >
               <Icon size={16} className="shrink-0" />
               <span>{t.message}</span>

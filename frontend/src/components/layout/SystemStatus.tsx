@@ -13,9 +13,9 @@ export default function SystemStatus() {
   }, []);
 
   const colors = {
-    loading: "text-slate-400",
-    ok: "text-emerald-600",
-    error: "text-red-500",
+    loading: "text-neutral-400",
+    ok: "text-neutral-600 dark:text-neutral-400",
+    error: "text-red-600",
   };
 
   const labels = {
@@ -26,7 +26,7 @@ export default function SystemStatus() {
 
   return (
     <div className={`flex items-center gap-1.5 text-xs ${colors[status]}`}>
-      <Activity size={12} className={status === "ok" ? "animate-pulse" : ""} />
+      <Activity size={12} className={status === "ok" ? "" : ""} />
       <span>{labels[status]}</span>
     </div>
   );

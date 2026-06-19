@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Trash2, RefreshCw, Sparkles } from "lucide-react";
+import { ArrowLeft, Trash2, RefreshCw, FileSearch } from "lucide-react";
 import { useTicket } from "../hooks/useTickets";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { useToast } from "../context/ToastContext";
@@ -94,8 +94,10 @@ export default function TicketDetailPage() {
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">{ticket.title}</h1>
             <span
-              className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                analyzed ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"
+              className={`inline-flex rounded-md px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${
+                analyzed
+                  ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
+                  : "border border-neutral-200 text-neutral-600"
               }`}
             >
               {analyzed ? "Analyzed" : "Pending"}
@@ -119,8 +121,8 @@ export default function TicketDetailPage() {
           {analyzed && (
             <Link to={`/tickets/${ticket.id}/ai`}>
               <Button variant="secondary" size="sm">
-                <Sparkles size={14} />
-                AI View
+                <FileSearch size={14} />
+                View analysis
               </Button>
             </Link>
           )}
@@ -143,12 +145,12 @@ export default function TicketDetailPage() {
       ) : (
         <Card className="border-dashed">
           <div className="flex flex-col items-center py-6 text-center">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-600">
-              <Sparkles size={22} />
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-md bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+              <FileSearch size={22} />
             </div>
-            <p className="font-medium text-slate-700">No AI analysis yet</p>
-            <p className="mt-1 text-sm text-slate-500">
-              Click Analyze to classify this ticket with AI
+            <p className="font-semibold text-neutral-900 dark:text-white">No analysis yet</p>
+            <p className="mt-1 text-sm text-neutral-500">
+              Run analysis to classify this ticket.
             </p>
             <Button className="mt-4" size="sm" onClick={handleAnalyze} disabled={actionLoading}>
               Run Analysis

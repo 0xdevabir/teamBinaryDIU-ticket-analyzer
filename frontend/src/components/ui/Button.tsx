@@ -2,11 +2,11 @@ import type { ButtonHTMLAttributes } from "react";
 
 const variants = {
   primary:
-    "bg-brand-600 text-white hover:bg-brand-700 shadow-sm shadow-brand-600/20 dark:bg-brand-600 dark:hover:bg-brand-500",
+    "bg-neutral-900 text-white hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200",
   secondary:
-    "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-sm dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-700",
-  danger: "bg-red-600 text-white hover:bg-red-700 shadow-sm",
-  ghost: "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800",
+    "bg-white text-neutral-900 border border-neutral-200 hover:bg-neutral-50 dark:bg-neutral-900 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-800",
+  danger: "bg-neutral-900 text-white hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500",
+  ghost: "text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800",
 };
 
 const sizes = {
@@ -29,7 +29,7 @@ export default function Button({
 }: ButtonProps) {
   return (
     <button
-      className={`inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-md font-semibold tracking-tight transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${sizes[size]} ${className}`}
       {...props}
     >
       {children}

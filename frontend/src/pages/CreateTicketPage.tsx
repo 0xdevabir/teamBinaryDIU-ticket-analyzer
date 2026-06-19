@@ -30,8 +30,8 @@ export default function CreateTicketPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <PageHeader
-        title="Create Ticket"
-        description="Submit a support ticket and get instant AI classification"
+        title="Create ticket"
+        description="Submit a support request for classification and triage"
       />
       <Card>
         <TicketForm
