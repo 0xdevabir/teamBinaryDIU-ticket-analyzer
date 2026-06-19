@@ -23,7 +23,9 @@ docker compose up --build
 |----------|-----|
 | Frontend | http://localhost:80 |
 | Backend  | http://localhost:8000 |
+| AI Service | http://localhost:8001 |
 | API Docs | http://localhost:8000/docs |
+| AI Docs | http://localhost:8001/docs |
 
 ### 3. Run in development mode (hot reload)
 
@@ -70,7 +72,9 @@ npm run dev
 | GET | `/api/v1/tickets/{id}` | Ticket detail |
 | PATCH | `/api/v1/tickets/{id}` | Update ticket |
 | DELETE | `/api/v1/tickets/{id}` | Delete ticket |
-| POST | `/api/v1/tickets/{id}/analyze` | Run AI analysis |
+| POST | `/api/v1/tickets/{id}/analyze` | Run AI analysis (persisted) |
+| POST | `/api/v1/ai/analyze` | Stateless AI analysis |
+| POST | `http://localhost:8001/analyze` | AI microservice |
 | GET | `/api/v1/dashboard/stats` | Dashboard metrics |
 | GET | `/api/v1/dashboard/recent` | Recent tickets |
 | POST | `/api/v1/dashboard/seed` | Load demo tickets |

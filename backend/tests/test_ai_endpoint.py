@@ -22,7 +22,7 @@ async def test_ai_service_health(ai_client):
 @pytest.mark.asyncio
 async def test_ai_analyze_endpoint(ai_client):
     response = await ai_client.post(
-        "/ai/analyze",
+        "/analyze",
         json={
             "title": "Unable to login",
             "description": "User cannot login after password reset",

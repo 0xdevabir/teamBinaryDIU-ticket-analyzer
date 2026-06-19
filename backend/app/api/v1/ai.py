@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends
 from app.schemas.ai import AnalyzeRequest, AnalyzeResponse
 from app.services.inference_api_service import InferenceApiService
 
-router = APIRouter(prefix="/ai", tags=["ai"])
+router = APIRouter(tags=["ai"])
 
 
 @lru_cache
