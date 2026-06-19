@@ -1,54 +1,42 @@
 interface BarChartProps {
   title: string;
   data: Record<string, number>;
-  colors?: Record<string, string>;
 }
 
-const DEFAULT_COLORS: Record<string, string> = {
-  Billing: "#8b5cf6",
-  Technical: "#3b82f6",
-  Account: "#06b6d4",
-  "Feature Request": "#10b981",
-  Other: "#6b7280",
-  critical: "#dc2626",
-  high: "#ea580c",
-  medium: "#ca8a04",
-  low: "#16a34a",
-};
+const barColors = [
+  "bg-brand-500",
+  "bg-violet-500",
+  "bg-cyan-500",
+  "bg-emerald-500",
+  "bg-amber-500",
+  "bg-rose-500",
+];
 
-export default function BarChart({ title, data, colors = DEFAULT_COLORS }: BarChartProps) {
+export default function BarChart({ title, data }: BarChartProps) {
   const entries = Object.entries(data);
   const max = Math.max(...entries.map(([, v]) => v), 1);
 
-  if (!entries.length) {
-    return (
-      <div className="card">
-        <h2>{title}</h2>
-        <p className="muted">No data yet</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="card">
-      <h2>{title}</h2>
-      <div className="bar-chart">
-        {entries.map(([label, value]) => (
-          <div key={label} className="bar-row">
-            <span className="bar-label">{label}</span>
-            <div className="bar-track">
-              <div
-                className="bar-fill"
-                style={{
-                  width: `${(value / max) * 100}%`,
-                  backgroundColor: colors[label] ?? "#64748b",
-                }}
-              />
+    <div>
+      <h3 className="mb-4 text-sm font-semibold text-slate-700">{title}</h3>
+      {entries.length === 0 ? (
+        <p className="text-sm text-slate-400">No data yet</p>
+      ) : (
+        <div className="space-y-3">
+          {entries.map(([label, value], i) => (
+            <div key={label} className="grid grid-cols-[100px_1fr_32px] items-center gap-3">
+              <span className="truncate text-xs text-slate-600">{label}</span>
+              <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
+                <div
+                  className={`h-full rounded-full transition-all ${barColors[i % barColors.length]}`}
+                  style={{ width: `${(value / max) * 100}%` }}
+                />
+              </div>
+              <span className="text-right text-xs font-semibold text-slate-700">{value}</span>
             </div>
-            <span className="bar-value">{value}</span>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
