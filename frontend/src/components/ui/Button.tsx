@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from "react";
 
 const variants = {
   primary:
-    "bg-neutral-900 text-white hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200",
+    "bg-brand-600 text-white hover:bg-brand-700 dark:bg-brand-600 dark:hover:bg-brand-500",
   secondary:
     "bg-white text-neutral-900 border border-neutral-200 hover:bg-neutral-50 dark:bg-neutral-900 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-800",
   danger: "bg-neutral-900 text-white hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500",

@@ -96,8 +96,8 @@ export default function TicketDetailPage() {
             <span
               className={`inline-flex rounded-md px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${
                 analyzed
-                  ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
-                  : "border border-neutral-200 text-neutral-600"
+                  ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
+                  : "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
               }`}
             >
               {analyzed ? "Analyzed" : "Pending"}
@@ -145,7 +145,7 @@ export default function TicketDetailPage() {
       ) : (
         <Card className="border-dashed">
           <div className="flex flex-col items-center py-6 text-center">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-md bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-md bg-brand-50 text-brand-600 dark:bg-brand-950/40 dark:text-brand-400">
               <FileSearch size={22} />
             </div>
             <p className="font-semibold text-neutral-900 dark:text-white">No analysis yet</p>

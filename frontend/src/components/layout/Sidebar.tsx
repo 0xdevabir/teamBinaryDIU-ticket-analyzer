@@ -24,7 +24,7 @@ export default function Sidebar() {
       }`}
     >
       <div className="flex h-16 items-center gap-3 border-b border-neutral-100 px-4 dark:border-neutral-800">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-neutral-900 text-sm font-bold text-white dark:bg-white dark:text-neutral-900">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-brand-600 text-sm font-bold text-white">
           T
         </div>
         {!collapsed && (
@@ -49,8 +49,8 @@ export default function Sidebar() {
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
-                  : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white"
+                  ? "bg-brand-600 text-white"
+                  : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-white"
               }`
             }
           >

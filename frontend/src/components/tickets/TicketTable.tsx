@@ -48,7 +48,7 @@ export default function TicketTable({ tickets, compact = false }: Props) {
                 <td className="px-4 py-3.5">
                   <Link
                     to={`/tickets/${ticket.id}`}
-                    className="font-medium text-neutral-900 hover:underline dark:text-neutral-100"
+                    className="font-medium text-neutral-900 hover:text-brand-600 dark:text-neutral-100 dark:hover:text-brand-400"
                   >
                     <span className="line-clamp-1">{ticket.title}</span>
                   </Link>
@@ -78,7 +78,7 @@ export default function TicketTable({ tickets, compact = false }: Props) {
                       <div className="flex items-center gap-2">
                         <div className="h-1.5 w-16 overflow-hidden rounded-full bg-slate-100">
                           <div
-                            className="h-full rounded-sm bg-neutral-900 dark:bg-white"
+                            className="h-full rounded-sm bg-brand-500"
                             style={{ width: `${ticket.ai_confidence * 100}%` }}
                           />
                         </div>
@@ -95,8 +95,8 @@ export default function TicketTable({ tickets, compact = false }: Props) {
                   <span
                     className={`inline-flex rounded-md px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${
                       analyzed
-                        ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
-                        : "border border-neutral-200 text-neutral-600 dark:border-neutral-700 dark:text-neutral-400"
+                        ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
+                        : "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
                     }`}
                   >
                     {analyzed ? "Analyzed" : "Pending"}
@@ -108,7 +108,7 @@ export default function TicketTable({ tickets, compact = false }: Props) {
                 <td className="px-4 py-3.5">
                   <Link
                     to={`/tickets/${ticket.id}`}
-                    className="inline-flex items-center gap-1 text-xs font-medium text-neutral-600 hover:text-neutral-900 md:opacity-0 md:transition-opacity md:group-hover:opacity-100 dark:text-neutral-400 dark:hover:text-white"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-brand-600 hover:text-brand-700 md:opacity-0 md:transition-opacity md:group-hover:opacity-100 dark:text-brand-400"
                   >
                     View
                     <ArrowUpRight size={12} />

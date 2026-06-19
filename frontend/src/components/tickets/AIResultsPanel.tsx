@@ -15,7 +15,7 @@ export default function AIResultsPanel({ result }: { result: AIResultView }) {
 
   return (
     <Card className="overflow-hidden p-0">
-      <div className="border-b border-neutral-200 px-6 py-5 dark:border-neutral-800">
+      <div className="border-b border-neutral-200 border-l-4 border-l-brand-600 px-6 py-5 dark:border-neutral-800">
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-bold tracking-tight text-neutral-900 dark:text-white">
@@ -79,7 +79,7 @@ export default function AIResultsPanel({ result }: { result: AIResultView }) {
           </div>
           <div className="h-2 overflow-hidden rounded-sm bg-neutral-100 dark:bg-neutral-800">
             <div
-              className="h-full rounded-sm bg-neutral-900 transition-all duration-500 dark:bg-white"
+              className="h-full rounded-sm bg-brand-600"
               style={{ width: `${confidencePct}%` }}
             />
           </div>

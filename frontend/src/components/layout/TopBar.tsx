@@ -10,7 +10,7 @@ export default function TopBar() {
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-neutral-200 bg-white px-4 dark:border-neutral-800 dark:bg-neutral-950 md:px-6">
       <div className="flex items-center gap-3 md:hidden">
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-neutral-900 text-xs font-bold text-white dark:bg-white dark:text-neutral-900">
+        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-brand-600 text-xs font-bold text-white">
           T
         </div>
         <span className="font-bold tracking-tight text-neutral-900 dark:text-white">

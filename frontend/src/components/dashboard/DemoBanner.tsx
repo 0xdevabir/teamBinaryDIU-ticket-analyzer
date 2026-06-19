@@ -12,7 +12,7 @@ export default function DemoBanner({ onSeed, seeding, hasTickets }: Props) {
   if (hasTickets) return null;
 
   return (
-    <div className="rounded-lg border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900">
+    <div className="rounded-lg border border-brand-100 bg-brand-50/50 p-6 dark:border-brand-900/50 dark:bg-brand-950/20">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="font-semibold tracking-tight text-neutral-900 dark:text-white">

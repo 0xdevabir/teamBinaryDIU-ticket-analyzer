@@ -1,12 +1,12 @@
 const CHART_COLORS = [
-  "#0a0a0a",
-  "#404040",
-  "#737373",
-  "#a3a3a3",
-  "#d4d4d4",
-  "#e5e5e5",
-  "#525252",
-  "#262626",
+  "#2563eb",
+  "#6366f1",
+  "#0ea5e9",
+  "#10b981",
+  "#f59e0b",
+  "#64748b",
+  "#8b5cf6",
+  "#94a3b8",
 ];
 
 interface DistributionChartProps {

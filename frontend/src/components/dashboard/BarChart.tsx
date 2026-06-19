@@ -4,12 +4,12 @@ interface BarChartProps {
 }
 
 const barColors = [
-  "bg-neutral-900 dark:bg-white",
-  "bg-neutral-700",
-  "bg-neutral-500",
-  "bg-neutral-400",
-  "bg-neutral-300",
-  "bg-neutral-200",
+  "bg-brand-600",
+  "bg-indigo-500",
+  "bg-sky-500",
+  "bg-emerald-500",
+  "bg-amber-500",
+  "bg-slate-400",
 ];
 
 export default function BarChart({ title, data }: BarChartProps) {

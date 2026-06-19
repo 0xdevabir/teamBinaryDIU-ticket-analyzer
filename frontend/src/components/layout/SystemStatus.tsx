@@ -14,7 +14,7 @@ export default function SystemStatus() {
 
   const colors = {
     loading: "text-neutral-400",
-    ok: "text-neutral-600 dark:text-neutral-400",
+    ok: "text-emerald-600 dark:text-emerald-400",
     error: "text-red-600",
   };
 
