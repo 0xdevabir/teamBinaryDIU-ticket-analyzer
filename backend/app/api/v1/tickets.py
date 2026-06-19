@@ -1,18 +1,18 @@
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
+from fastapi import APIRouter, Depends, Query, Response, status
 
 from app.dependencies import get_analysis_service, get_ticket_service
 from app.schemas.ticket import TicketCreate, TicketListResponse, TicketResponse, TicketUpdate
 from app.services.analysis_service import AnalysisService
 from app.services.ticket_service import TicketService
 
-router = APIRouter(prefix="/tickets")
+router = APIRouter(prefix="/tickets", tags=["tickets"])
 
 
 @router.post("", response_model=TicketResponse, status_code=status.HTTP_201_CREATED)
 async def create_ticket(data: TicketCreate, service: TicketService = Depends(get_ticket_service)):
-    return await service.create(data)
+  return await service.create(data)
 
 
 @router.get("", response_model=TicketListResponse)
@@ -38,10 +38,7 @@ async def list_tickets(
 
 @router.get("/{ticket_id}", response_model=TicketResponse)
 async def get_ticket(ticket_id: uuid.UUID, service: TicketService = Depends(get_ticket_service)):
-    ticket = await service.get(ticket_id)
-    if not ticket:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ticket not found")
-    return ticket
+    return await service.get(ticket_id)
 
 
 @router.patch("/{ticket_id}", response_model=TicketResponse)
@@ -50,19 +47,12 @@ async def update_ticket(
     data: TicketUpdate,
     service: TicketService = Depends(get_ticket_service),
 ):
-    if not data.model_dump(exclude_unset=True):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No fields to update")
-    ticket = await service.update(ticket_id, data)
-    if not ticket:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ticket not found")
-    return ticket
+    return await service.update(ticket_id, data)
 
 
 @router.delete("/{ticket_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_ticket(ticket_id: uuid.UUID, service: TicketService = Depends(get_ticket_service)):
-    deleted = await service.delete(ticket_id)
-    if not deleted:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ticket not found")
+    await service.delete(ticket_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
@@ -71,7 +61,4 @@ async def analyze_ticket(
     ticket_id: uuid.UUID,
     service: AnalysisService = Depends(get_analysis_service),
 ):
-    ticket = await service.analyze_ticket(ticket_id)
-    if not ticket:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Ticket not found")
-    return ticket
+    return await service.analyze_ticket(ticket_id)

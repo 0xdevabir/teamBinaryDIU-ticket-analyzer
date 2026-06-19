@@ -1,17 +1,23 @@
-from contextlib import asynccontextmanager
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.router import api_router
 from app.config import settings
+from app.core.handlers import register_exception_handlers
 
+logging.basicConfig(
+    level=logging.DEBUG if settings.debug else logging.INFO,
+    format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+)
 logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    logger.info("Starting %s v%s", settings.app_name, settings.app_version)
     if settings.ai_inference_mode in {"local", "auto"}:
         try:
             from app.ai.model_registry import preload_models
@@ -21,21 +27,30 @@ async def lifespan(_: FastAPI):
         except Exception as exc:
             logger.warning("AI model preload skipped: %s", exc)
     yield
+    logger.info("Shutting down %s", settings.app_name)
 
 
-app = FastAPI(
-    title="Ticket Analyzer API",
-    description="AI-powered support ticket classification and analysis",
-    version="1.0.0",
-    lifespan=lifespan,
-)
+def create_app() -> FastAPI:
+    app = FastAPI(
+        title=settings.app_name,
+        description="AI-powered support ticket classification and analysis",
+        version=settings.app_version,
+        lifespan=lifespan,
+        docs_url="/docs",
+        redoc_url="/redoc",
+    )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.cors_origin_list,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origin_list,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-app.include_router(api_router, prefix=settings.api_v1_prefix)
+    register_exception_handlers(app)
+    app.include_router(api_router, prefix=settings.api_v1_prefix)
+    return app
+
+
+app = create_app()

@@ -4,15 +4,24 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
+    # App
+    app_name: str = "Ticket Analyzer API"
+    app_version: str = "1.0.0"
+    debug: bool = False
+
+    # Database
     database_url: str = "postgresql+asyncpg://ticket_user:ticket_secret@localhost:5432/ticket_analyzer"
+    db_echo: bool = False
+    db_pool_size: int = 5
+    db_max_overflow: int = 10
+
+    # API
     api_v1_prefix: str = "/api/v1"
     cors_origins: str = "http://localhost:5173,http://localhost:3000,http://localhost:80"
 
-    # AI inference: local (CPU) | api (HF Inference API) | auto (local → api → fallback)
+    # AI
     ai_inference_mode: str = "auto"
     hf_api_token: str = ""
-
-    # Lightweight models — ~250 MB + ~300 MB, fast on CPU
     hf_zero_shot_model: str = "typeform/distilbert-base-uncased-mnli"
     hf_summarization_model: str = "sshleifer/distilbart-cnn-12-6"
     ai_request_timeout: int = 30
