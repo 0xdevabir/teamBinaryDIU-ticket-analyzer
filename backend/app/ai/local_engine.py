@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any
 
 from app.ai.model_registry import get_summarization_pipeline, get_zero_shot_pipeline
 from app.ai.prompts import CATEGORY_HYPOTHESIS, PRIORITY_HYPOTHESIS, PRIORITY_LABELS
@@ -56,3 +55,12 @@ class LocalEngine:
 
     async def summarize(self, text: str) -> str:
         return await asyncio.to_thread(_run_summarize, text)
+
+    async def analyze_parallel(self, text: str) -> tuple[str, float, str, float, str]:
+        """Run category, priority, and summary inference in parallel."""
+        (category, cat_score), (priority, pri_score), summary = await asyncio.gather(
+            self.classify_category(text),
+            self.classify_priority(text),
+            self.summarize(text),
+        )
+        return category, cat_score, priority, pri_score, summary

@@ -3,6 +3,7 @@ import uuid
 from fastapi import APIRouter, Depends, Query, Response, status
 
 from app.dependencies import get_analysis_service, get_ticket_service
+from app.schemas.analysis import TicketAnalyzeResponse
 from app.schemas.ticket import TicketCreate, TicketListResponse, TicketResponse, TicketUpdate
 from app.services.analysis_service import AnalysisService
 from app.services.ticket_service import TicketService

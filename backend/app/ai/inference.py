@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import time
 
 from app.ai.classifier import fallback_category
 from app.ai.confidence import build_confidence
@@ -27,6 +28,7 @@ class InferenceEngine:
         self._api = HuggingFaceClient()
 
     async def analyze(self, title: str, description: str) -> AnalysisResult:
+        started = time.perf_counter()
         text = _format_ticket_text(title, description)
         source = "fallback"
 
@@ -36,14 +38,14 @@ class InferenceEngine:
 
         if settings.ai_inference_mode in {"local", "auto"}:
             try:
-                category, cat_score = await self._local.classify_category(text)
-                priority, pri_zs_score = await self._local.classify_priority(text)
-                summary = await self._local.summarize(text)
+                category, cat_score, priority, pri_zs_score, summary = (
+                    await self._local.analyze_parallel(text)
+                )
                 source = "local"
             except Exception as exc:
                 logger.warning("Local inference failed: %s", exc)
                 if settings.ai_inference_mode == "local":
-                    return self._fallback_result(text)
+                    return self._fallback_result(text, started)
 
         if source == "fallback" and settings.ai_inference_mode in {"api", "auto"} and self._api.enabled:
             try:
@@ -59,10 +61,11 @@ class InferenceEngine:
                 logger.warning("HF API inference failed: %s", exc)
 
         if source == "fallback":
-            return self._fallback_result(text)
+            return self._fallback_result(text, started)
 
         pri_kw_score = keyword_priority_score(text, priority)[1]
         confidence = build_confidence(cat_score, pri_zs_score, pri_kw_score, source)
+        elapsed_ms = int((time.perf_counter() - started) * 1000)
 
         return AnalysisResult(
             category=category,
@@ -71,12 +74,14 @@ class InferenceEngine:
             ai_confidence=confidence.overall,
             confidence_breakdown=confidence.as_dict(),
             inference_source=source,
+            processing_ms=elapsed_ms,
         )
 
-    def _fallback_result(self, text: str) -> AnalysisResult:
+    def _fallback_result(self, text: str, started: float) -> AnalysisResult:
         category = fallback_category(text)
         priority, pri_kw = keyword_priority_score(text)
         confidence = build_confidence(0.5, 0.5, pri_kw, "fallback")
+        elapsed_ms = int((time.perf_counter() - started) * 1000)
         return AnalysisResult(
             category=category,
             priority=priority,
@@ -84,4 +89,5 @@ class InferenceEngine:
             ai_confidence=confidence.overall,
             confidence_breakdown=confidence.as_dict(),
             inference_source="fallback",
+            processing_ms=elapsed_ms,
         )

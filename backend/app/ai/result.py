@@ -9,3 +9,4 @@ class AnalysisResult:
     ai_confidence: float
     confidence_breakdown: dict[str, float] = field(default_factory=dict)
     inference_source: str = "fallback"
+    processing_ms: int | None = None

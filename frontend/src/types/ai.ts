@@ -8,6 +8,9 @@ export interface AnalyzeResponse {
   priority: string;
   summary: string;
   confidence: number;
+  inference_source?: string;
+  confidence_breakdown?: Record<string, number>;
+  processing_ms?: number;
 }
 
 export interface AIResultView {
@@ -18,4 +21,7 @@ export interface AIResultView {
   priority: string;
   summary: string;
   confidence: number;
+  inference_source?: string;
+  confidence_breakdown?: Record<string, number>;
+  processing_ms?: number;
 }

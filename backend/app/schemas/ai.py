@@ -12,7 +12,10 @@ class AnalyzeRequest(BaseModel):
 
 
 class AnalyzeResponse(BaseModel):
-    category: str = Field(..., examples=["Authentication"])
-    priority: str = Field(..., examples=["High"])
-    summary: str = Field(..., examples=["User unable to login after password reset."])
-    confidence: float = Field(..., ge=0.0, le=1.0, examples=[0.92])
+    category: str
+    priority: str
+    summary: str
+    confidence: float = Field(..., ge=0.0, le=1.0)
+    inference_source: str = "fallback"
+    confidence_breakdown: dict[str, float] = Field(default_factory=dict)
+    processing_ms: int | None = None
