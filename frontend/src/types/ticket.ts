@@ -10,6 +10,11 @@ export interface Ticket {
   updated_at: string;
 }
 
+export interface TicketCreate {
+  title: string;
+  description: string;
+}
+
 export interface TicketListResponse {
   items: Ticket[];
   total: number;
@@ -25,7 +30,11 @@ export interface DashboardStats {
   avg_confidence?: number | null;
 }
 
-export interface TicketCreate {
-  title: string;
-  description: string;
+export interface TicketFilters {
+  page?: number;
+  page_size?: number;
+  analyzed?: string;
+  category?: string;
+  priority?: string;
+  search?: string;
 }
