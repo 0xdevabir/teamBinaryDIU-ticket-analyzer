@@ -7,3 +7,12 @@
     @apply bg-slate-50 text-slate-900 antialiased;
   }
 }
+
+@layer components {
+  .saas-card {
+    @apply rounded-xl border border-slate-200/80 bg-white shadow-saas;
+  }
+  .saas-input {
+    @apply w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10;
+  }
+}

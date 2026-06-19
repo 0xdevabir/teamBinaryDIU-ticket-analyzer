@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useCreateTicket } from "../hooks/useCreateTicket";
 import TicketForm from "../components/forms/TicketForm";
 import Card from "../components/ui/Card";
+import PageHeader from "../components/ui/PageHeader";
 import type { TicketCreate } from "../types/ticket";
 import type { AIResultView } from "../types/ai";
 
@@ -21,12 +22,10 @@ export default function CreateTicketPage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Create Ticket</h1>
-        <p className="text-sm text-slate-500">
-          Submit a support ticket and get instant AI classification
-        </p>
-      </div>
+      <PageHeader
+        title="Create Ticket"
+        description="Submit a support ticket and get instant AI classification"
+      />
       <Card>
         <TicketForm
           onSubmit={handleSubmit}

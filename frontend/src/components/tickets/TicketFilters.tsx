@@ -1,3 +1,4 @@
+import { Search } from "lucide-react";
 import type { TicketFilters } from "../../types/ticket";
 import Button from "../ui/Button";
 
@@ -15,25 +16,27 @@ interface Props {
   onApply: () => void;
 }
 
-const selectClass =
-  "rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20";
+const selectClass = "saas-input";
 
 export default function TicketFilters({ filters, onChange, onApply }: Props) {
   return (
     <form
-      className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-5"
+      className="saas-card grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-5"
       onSubmit={(e) => {
         e.preventDefault();
         onApply();
       }}
     >
-      <input
-        type="search"
-        placeholder="Search..."
-        value={filters.search ?? ""}
-        onChange={(e) => onChange({ ...filters, search: e.target.value })}
-        className={selectClass}
-      />
+      <div className="relative">
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <input
+          type="search"
+          placeholder="Search tickets..."
+          value={filters.search ?? ""}
+          onChange={(e) => onChange({ ...filters, search: e.target.value })}
+          className={`${selectClass} pl-9`}
+        />
+      </div>
       <select
         value={filters.category ?? ""}
         onChange={(e) => onChange({ ...filters, category: e.target.value })}
@@ -61,7 +64,7 @@ export default function TicketFilters({ filters, onChange, onApply }: Props) {
           <option key={o.value || "all"} value={o.value}>{o.label}</option>
         ))}
       </select>
-      <Button type="submit" className="w-full sm:w-auto">Apply</Button>
+      <Button type="submit" className="w-full sm:w-auto">Apply Filters</Button>
     </form>
   );
 }

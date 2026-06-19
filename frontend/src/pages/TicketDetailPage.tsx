@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Trash2, RefreshCw } from "lucide-react";
+import { ArrowLeft, Trash2, RefreshCw, Sparkles } from "lucide-react";
 import { useTicket } from "../hooks/useTickets";
 import { ticketsApi } from "../api";
 import Badge from "../components/ui/Badge";
@@ -58,28 +58,47 @@ export default function TicketDetailPage() {
     <div className="space-y-6">
       <Link
         to="/tickets"
-        className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-700"
       >
         <ArrowLeft size={16} />
         Back to tickets
       </Link>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">{ticket.title}</h1>
-          <p className="mt-1 text-sm text-slate-500">
-            {analyzed ? "Analyzed" : "Pending"} ·{" "}
-            {new Date(ticket.created_at).toLocaleString()}
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">{ticket.title}</h1>
+            <span
+              className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                analyzed
+                  ? "bg-emerald-50 text-emerald-700"
+                  : "bg-amber-50 text-amber-700"
+              }`}
+            >
+              {analyzed ? "Analyzed" : "Pending"}
+            </span>
+          </div>
+          <p className="text-sm text-slate-500">
+            Created {new Date(ticket.created_at).toLocaleString()}
           </p>
+          {analyzed && (
+            <div className="flex flex-wrap gap-2 pt-1">
+              <Badge label={ticket.category!} variant="category" />
+              <Badge label={ticket.priority!} variant="priority" />
+            </div>
+          )}
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="secondary" size="sm" onClick={handleAnalyze} disabled={actionLoading}>
-            <RefreshCw size={14} />
+            <RefreshCw size={14} className={actionLoading ? "animate-spin" : ""} />
             {analyzed ? "Re-analyze" : "Analyze"}
           </Button>
           {analyzed && (
             <Link to={`/tickets/${ticket.id}/ai`}>
-              <Button variant="secondary" size="sm">AI View</Button>
+              <Button variant="secondary" size="sm">
+                <Sparkles size={14} />
+                AI View
+              </Button>
             </Link>
           )}
           <Button variant="danger" size="sm" onClick={handleDelete} disabled={actionLoading}>
@@ -90,25 +109,29 @@ export default function TicketDetailPage() {
       </div>
 
       <Card>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-400">
+        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
           Description
         </h2>
-        <p className="text-slate-700 leading-relaxed">{ticket.description}</p>
+        <p className="leading-relaxed text-slate-700">{ticket.description}</p>
       </Card>
 
       {aiResult ? (
         <AIResultsPanel result={aiResult} />
       ) : (
-        <Card>
-          <p className="text-slate-500">No AI analysis yet. Click Analyze to run classification.</p>
+        <Card className="border-dashed">
+          <div className="flex flex-col items-center py-6 text-center">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+              <Sparkles size={22} />
+            </div>
+            <p className="font-medium text-slate-700">No AI analysis yet</p>
+            <p className="mt-1 text-sm text-slate-500">
+              Click Analyze to classify this ticket with AI
+            </p>
+            <Button className="mt-4" size="sm" onClick={handleAnalyze} disabled={actionLoading}>
+              Run Analysis
+            </Button>
+          </div>
         </Card>
-      )}
-
-      {analyzed && (
-        <div className="flex gap-2">
-          <Badge label={ticket.category!} />
-          <Badge label={ticket.priority!} />
-        </div>
       )}
     </div>
   );

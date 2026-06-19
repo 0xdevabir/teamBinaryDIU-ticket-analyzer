@@ -1,9 +1,13 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Plus } from "lucide-react";
 import { useTickets } from "../hooks/useTickets";
 import type { TicketFilters as Filters } from "../types/ticket";
 import TicketFiltersBar from "../components/tickets/TicketFilters";
-import TicketCard from "../components/tickets/TicketCard";
+import TicketTable from "../components/tickets/TicketTable";
 import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
+import PageHeader from "../components/ui/PageHeader";
 import Spinner from "../components/ui/Spinner";
 import EmptyState from "../components/ui/EmptyState";
 
@@ -20,10 +24,18 @@ export default function TicketListPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Tickets</h1>
-        <p className="text-sm text-slate-500">Browse and filter support tickets</p>
-      </div>
+      <PageHeader
+        title="Tickets"
+        description="Browse, filter, and manage support tickets"
+        action={
+          <Link to="/create">
+            <Button size="sm">
+              <Plus size={16} />
+              New Ticket
+            </Button>
+          </Link>
+        }
+      />
 
       <TicketFiltersBar filters={draft} onChange={setDraft} onApply={applyFilters} />
 
@@ -34,18 +46,20 @@ export default function TicketListPage() {
       {loading ? (
         <Spinner label="Loading tickets..." />
       ) : tickets.length === 0 ? (
-        <EmptyState title="No tickets found" description="Try adjusting your filters." />
+        <Card>
+          <EmptyState title="No tickets found" description="Try adjusting your filters." />
+        </Card>
       ) : (
         <>
-          <p className="text-sm text-slate-500">
-            Showing {tickets.length} of {total} tickets
-          </p>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {tickets.map((t) => (
-              <TicketCard key={t.id} ticket={t} />
-            ))}
+          <div className="flex items-center justify-between text-sm text-slate-500">
+            <span>
+              Showing {tickets.length} of {total} tickets
+            </span>
           </div>
-          <div className="flex items-center justify-center gap-4 pt-4">
+          <Card padding={false}>
+            <TicketTable tickets={tickets} />
+          </Card>
+          <div className="flex items-center justify-center gap-4 pt-2">
             <Button
               variant="secondary"
               size="sm"

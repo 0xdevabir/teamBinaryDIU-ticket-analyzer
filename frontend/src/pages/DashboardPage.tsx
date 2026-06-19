@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Database, ArrowRight } from "lucide-react";
 import { useDashboard } from "../hooks/useDashboard";
 import StatsCards from "../components/dashboard/StatsCards";
 import BarChart from "../components/dashboard/BarChart";
-import TicketCard from "../components/tickets/TicketCard";
+import TicketTable from "../components/tickets/TicketTable";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
+import PageHeader from "../components/ui/PageHeader";
 import Spinner from "../components/ui/Spinner";
 import EmptyState from "../components/ui/EmptyState";
 
@@ -26,15 +28,16 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-          <p className="text-sm text-slate-500">AI-powered support ticket insights</p>
-        </div>
-        <Button variant="secondary" onClick={handleSeed} disabled={seeding}>
-          {seeding ? "Seeding..." : "Load Demo Data"}
-        </Button>
-      </div>
+      <PageHeader
+        title="Dashboard"
+        description="AI-powered support ticket insights at a glance"
+        action={
+          <Button variant="secondary" onClick={handleSeed} disabled={seeding}>
+            <Database size={16} />
+            {seeding ? "Seeding..." : "Load Demo Data"}
+          </Button>
+        }
+      />
 
       {error && (
         <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
@@ -58,26 +61,30 @@ export default function DashboardPage() {
       <section>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-900">Recent Tickets</h2>
-          <Link to="/tickets" className="text-sm font-medium text-brand-600 hover:text-brand-700">
-            View all →
+          <Link
+            to="/tickets"
+            className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 hover:text-brand-700"
+          >
+            View all
+            <ArrowRight size={14} />
           </Link>
         </div>
         {recent.length === 0 ? (
-          <EmptyState
-            title="No tickets yet"
-            description="Submit a ticket or load demo data to get started."
-            action={
-              <Link to="/create">
-                <Button>Create Ticket</Button>
-              </Link>
-            }
-          />
+          <Card>
+            <EmptyState
+              title="No tickets yet"
+              description="Submit a ticket or load demo data to get started."
+              action={
+                <Link to="/create">
+                  <Button>Create Ticket</Button>
+                </Link>
+              }
+            />
+          </Card>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {recent.map((t) => (
-              <TicketCard key={t.id} ticket={t} />
-            ))}
-          </div>
+          <Card padding={false}>
+            <TicketTable tickets={recent} compact />
+          </Card>
         )}
       </section>
     </div>
