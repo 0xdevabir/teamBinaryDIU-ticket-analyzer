@@ -12,7 +12,7 @@ router = APIRouter(prefix="/tickets", tags=["tickets"])
 
 @router.post("", response_model=TicketResponse, status_code=status.HTTP_201_CREATED)
 async def create_ticket(data: TicketCreate, service: TicketService = Depends(get_ticket_service)):
-  return await service.create(data)
+    return await service.create(data)
 
 
 @router.get("", response_model=TicketListResponse)

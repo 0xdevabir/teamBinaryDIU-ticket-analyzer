@@ -1,187 +1,118 @@
-# FastAPI Backend Architecture — Ticket Analyzer
+# FastAPI Backend — Complete File Reference
 
-## Overview
-
-Layered monolith using async SQLAlchemy, Pydantic v2, and PostgreSQL. Each layer has a single responsibility; routes stay thin and delegate to services.
+## Clean Architecture Layers
 
 ```
-HTTP Request
-    → API Router (validation, status codes)
-    → Service Layer (business rules)
-    → Repository Layer (SQL queries)
-    → PostgreSQL
+Presentation  →  app/api/v1/
+DTO           →  app/schemas/
+Business      →  app/services/
+Data Access   →  app/repositories/
+ORM           →  app/models/
+Infrastructure→  app/db/, app/config.py, app/dependencies.py
+AI            →  app/ai/
+Core          →  app/core/
 ```
 
-AI analysis is isolated in `app/ai/` and orchestrated by `AnalysisService`.
-
----
-
-## Folder Structure
+## All Files
 
 ```
 backend/
-├── Dockerfile                    # Multi-stage: development | production
-├── requirements.txt              # Python dependencies
-├── alembic.ini                   # Migration config
+├── Dockerfile                      # Multi-stage Docker build (dev + prod)
+├── .dockerignore
+├── requirements.txt                # Python dependencies
+├── pytest.ini                      # Test configuration
+├── alembic.ini                     # Alembic config
+├── ARCHITECTURE.md                 # This file
+│
 ├── alembic/
-│   ├── env.py                    # Migration runtime (imports models)
-│   └── versions/                 # Versioned schema migrations
+│   ├── env.py                      # Migration runtime
+│   └── versions/
+│       └── 001_initial_schema.py   # tickets table + enums + indexes
+│
 ├── db/
-│   └── schema.sql                # Reference SQL schema
+│   └── schema.sql                  # Reference PostgreSQL schema
+│
 ├── scripts/
-│   └── seed_demo.py              # CLI seed script
+│   └── seed_demo.py                # CLI demo data seeder
+│
+├── tests/
+│   ├── conftest.py                 # Pytest fixtures
+│   ├── test_ai.py                  # AI unit tests
+│   └── test_api.py                 # API integration tests
+│
 └── app/
-    ├── main.py                   # FastAPI app, CORS, router mount
-    ├── config.py                 # pydantic-settings (env vars)
-    ├── dependencies.py           # Dependency injection (DB, services)
+    ├── main.py                     # FastAPI factory, CORS, lifespan
+    ├── config.py                   # pydantic-settings (env vars)
+    ├── dependencies.py             # DI: get_db, services
     │
-    ├── api/v1/                   # ── Presentation Layer ──
-    │   ├── router.py             # Aggregates all v1 routers
-    │   ├── health.py             # Liveness / readiness probes
-    │   ├── categories.py         # GET /categories
-    │   ├── tickets.py            # CRUD + POST /tickets/{id}/analyze
-    │   └── dashboard.py          # Stats, recent, seed
+    ├── core/
+    │   ├── exceptions.py           # AppError, TicketNotFoundError
+    │   └── handlers.py             # Global exception handlers
     │
-    ├── schemas/                  # ── DTO Layer (Pydantic) ──
-    │   ├── ticket.py             # TicketCreate, Update, Response
-    │   ├── analysis.py           # AnalysisResponse
-    │   └── dashboard.py          # DashboardStats
+    ├── api/v1/
+    │   ├── router.py               # Route aggregator
+    │   ├── health.py               # GET /health, /health/ready
+    │   ├── categories.py           # GET /categories
+    │   ├── tickets.py              # CRUD + POST /analyze
+    │   └── dashboard.py            # Stats, recent, seed
     │
-    ├── services/                 # ── Business Layer ──
-    │   ├── ticket_service.py     # CRUD orchestration
-    │   └── analysis_service.py   # AI analysis orchestration
+    ├── schemas/
+    │   ├── ticket.py               # TicketCreate, Update, Response
+    │   ├── analysis.py             # AnalysisResponse
+    │   └── dashboard.py            # DashboardStats
     │
-    ├── repositories/             # ── Data Access Layer ──
-    │   └── ticket_repository.py  # SQLAlchemy queries
+    ├── services/
+    │   ├── ticket_service.py       # CRUD business logic
+    │   └── analysis_service.py     # AI analysis orchestration
     │
-    ├── models/                   # ── ORM Layer ──
-    │   └── ticket.py             # SQLAlchemy Ticket model
+    ├── repositories/
+    │   └── ticket_repository.py    # SQLAlchemy queries
     │
-    ├── ai/                       # ── AI Integration ──
-    │   ├── hf_client.py          # Hugging Face HTTP client
-    │   ├── classifier.py         # Category classification
-    │   ├── priority_detector.py  # Rule-based priority
-    │   ├── summarizer.py         # Text summarization
-    │   ├── pipeline.py           # Orchestrates AI steps
-    │   └── result.py             # AnalysisResult dataclass
+    ├── models/
+    │   └── ticket.py               # Ticket ORM model
     │
-    └── db/
-        └── session.py            # Engine, session factory, get_db
+    ├── db/
+    │   └── session.py              # Engine, session, Base
+    │
+    └── ai/                         # Hugging Face inference
+        ├── inference.py
+        ├── local_engine.py
+        ├── hf_client.py
+        ├── pipeline.py
+        ├── model_registry.py
+        ├── confidence.py
+        ├── prompts.py
+        ├── classifier.py
+        ├── priority_detector.py
+        ├── summarizer.py
+        └── result.py
 ```
 
----
+## API Routes
 
-## File Explanations
+| Method | Endpoint | Service |
+|--------|----------|---------|
+| POST | `/api/v1/tickets` | TicketService.create |
+| GET | `/api/v1/tickets` | TicketService.list |
+| GET | `/api/v1/tickets/{id}` | TicketService.get |
+| PATCH | `/api/v1/tickets/{id}` | TicketService.update |
+| DELETE | `/api/v1/tickets/{id}` | TicketService.delete |
+| POST | `/api/v1/tickets/{id}/analyze` | AnalysisService.analyze_ticket |
 
-| File | Responsibility |
-|------|----------------|
-| `main.py` | Creates FastAPI app, registers middleware and `/api/v1` router |
-| `config.py` | Centralizes env vars: DB URL, CORS, HF token, model names |
-| `dependencies.py` | FastAPI `Depends()` factories for DB session and services |
-| `api/v1/tickets.py` | HTTP mapping only — no business logic |
-| `schemas/ticket.py` | Request/response contracts; validation rules |
-| `services/ticket_service.py` | CRUD rules (e.g. clear AI fields when content changes) |
-| `services/analysis_service.py` | Runs AI pipeline, persists results |
-| `repositories/ticket_repository.py` | All `SELECT`/`INSERT`/`UPDATE`/`DELETE` |
-| `models/ticket.py` | Maps `tickets` table to Python class |
-| `ai/pipeline.py` | Calls HF models + fallbacks, returns `AnalysisResult` |
-| `db/session.py` | Async engine, commits on success, rolls back on error |
+## Environment Variables
 
----
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_URL` | postgresql+asyncpg://... | Async PostgreSQL connection |
+| `API_V1_PREFIX` | /api/v1 | API base path |
+| `CORS_ORIGINS` | localhost origins | Allowed CORS origins |
+| `AI_INFERENCE_MODE` | auto | local \| api \| auto |
+| `HF_API_TOKEN` | (empty) | HF API token (optional) |
+| `DEBUG` | false | Enable debug logging |
 
-## Route Structure
+## Run
 
-Base prefix: `/api/v1`
-
-### Health
-
-| Method | Path | Handler | Description |
-|--------|------|---------|-------------|
-| GET | `/health` | `health.check` | Liveness probe |
-| GET | `/health/ready` | `health.ready` | DB connectivity check |
-
-### Categories
-
-| Method | Path | Handler | Description |
-|--------|------|---------|-------------|
-| GET | `/categories` | `categories.list_categories` | Valid category labels |
-
-### Tickets (CRUD + AI)
-
-| Method | Path | Handler | Status | Description |
-|--------|------|---------|--------|-------------|
-| POST | `/tickets` | `tickets.create_ticket` | 201 | Create ticket (no AI) |
-| GET | `/tickets` | `tickets.list_tickets` | 200 | Paginated list + filters |
-| GET | `/tickets/{id}` | `tickets.get_ticket` | 200 | Single ticket |
-| PATCH | `/tickets/{id}` | `tickets.update_ticket` | 200 | Update title/description |
-| DELETE | `/tickets/{id}` | `tickets.delete_ticket` | 204 | Delete ticket |
-| POST | `/tickets/{id}/analyze` | `tickets.analyze_ticket` | 200 | Run AI analysis |
-
-### Dashboard
-
-| Method | Path | Handler | Description |
-|--------|------|---------|-------------|
-| GET | `/dashboard/stats` | `dashboard.stats` | Aggregated metrics |
-| GET | `/dashboard/recent` | `dashboard.recent` | Last 5 tickets |
-| POST | `/dashboard/seed` | `dashboard.seed` | Load demo data |
-
----
-
-## Service Layer Structure
-
-### TicketService
-
+```bash
+docker compose up --build
+# API docs: http://localhost:8000/docs
 ```
-create(data)           → repo.create()
-get(id)                → repo.get_by_id()
-list(filters, page)    → repo.list()
-update(id, data)       → repo.get_by_id() → validate → repo.update()
-                         (clears AI fields if title/description changed)
-delete(id)             → repo.get_by_id() → repo.delete()
-```
-
-### AnalysisService
-
-```
-analyze(ticket_id)     → repo.get_by_id()
-                       → pipeline.run(title, description)
-                       → repo.apply_analysis()
-```
-
-### Dependency Flow
-
-```
-tickets.py
-  └─ Depends(get_ticket_service)
-       └─ TicketService(db)
-            └─ TicketRepository(db)
-
-tickets.py (analyze)
-  └─ Depends(get_analysis_service)
-       └─ AnalysisService(db)
-            ├─ TicketRepository(db)
-            └─ AnalysisPipeline()
-```
-
----
-
-## Docker Support
-
-| Stage | Command | Use |
-|-------|---------|-----|
-| `development` | `uvicorn --reload` | Local hot-reload via compose override |
-| `production` | `alembic upgrade head && uvicorn` | Runs migrations then starts API |
-
-Environment variables injected via `.env` and `docker-compose.yml`.
-
----
-
-## Design Decisions
-
-| Decision | Rationale |
-|----------|-----------|
-| Separate create and analyze | AI is slow/optional; ticket persists even if HF fails |
-| Repository pattern | Keeps SQL out of services; easy to test/mock |
-| Async SQLAlchemy | Non-blocking I/O for DB + HF HTTP calls |
-| PATCH for updates | Partial updates without sending full resource |
-| Clear AI on content edit | Stale analysis is misleading after edits |

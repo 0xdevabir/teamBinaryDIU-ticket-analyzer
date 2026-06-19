@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends
 
-from app.dependencies import get_ticket_service
+from app.dependencies import get_analysis_service, get_ticket_service
 from app.schemas.dashboard import DashboardStats
 from app.schemas.ticket import TicketCreate, TicketResponse
 from app.services.analysis_service import AnalysisService
 from app.services.ticket_service import TicketService
-from app.dependencies import get_analysis_service
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
@@ -35,10 +34,7 @@ DEMO_TICKETS = [
 
 @router.get("/stats", response_model=DashboardStats)
 async def dashboard_stats(service: TicketService = Depends(get_ticket_service)):
-    from app.repositories.ticket_repository import TicketRepository
-
-    repo = TicketRepository(service.repo.db)  # type: ignore[attr-defined]
-    return await repo.dashboard_stats()
+    return await service.dashboard_stats()
 
 
 @router.get("/recent", response_model=list[TicketResponse])

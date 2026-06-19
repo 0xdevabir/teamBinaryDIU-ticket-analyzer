@@ -4,7 +4,7 @@ from app.dependencies import get_ticket_service
 from app.schemas.ticket import CategoryResponse
 from app.services.ticket_service import TicketService
 
-router = APIRouter()
+router = APIRouter(tags=["categories"])
 
 
 @router.get("/categories", response_model=list[CategoryResponse])

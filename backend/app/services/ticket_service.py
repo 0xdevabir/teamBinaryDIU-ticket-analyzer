@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.exceptions import TicketNotFoundError, ValidationError
 from app.models.ticket import Ticket
 from app.repositories.ticket_repository import TicketRepository
+from app.schemas.dashboard import DashboardStats
 from app.schemas.ticket import TicketCreate, TicketUpdate
 
 
@@ -36,3 +37,10 @@ class TicketService:
         deleted = await self.repo.delete(ticket_id)
         if not deleted:
             raise TicketNotFoundError(str(ticket_id))
+
+    async def dashboard_stats(self) -> DashboardStats:
+        return await self.repo.dashboard_stats()
+
+    async def get_categories(self) -> list[str]:
+        from app.config import settings
+        return settings.ticket_categories
