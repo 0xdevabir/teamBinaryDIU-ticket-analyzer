@@ -26,7 +26,7 @@ export default function SystemStatus() {
 
   return (
     <div className={`flex items-center gap-1.5 text-xs ${colors[status]}`}>
-      <Activity size={12} className={status === "ok" ? "" : ""} />
+      <Activity size={12} />
       <span>{labels[status]}</span>
     </div>
   );

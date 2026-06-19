@@ -16,7 +16,7 @@ export default function AIResultsPage() {
   const stateResult = location.state?.result as AIResultView | undefined;
   const { ticket, loading, error } = useTicket(id, !stateResult);
 
-  useDocumentTitle("AI Analysis");
+  useDocumentTitle("Analysis");
 
   const fetchedResult = ticket ? ticketToAIResult(ticket) : null;
   const result = stateResult ?? fetchedResult;
