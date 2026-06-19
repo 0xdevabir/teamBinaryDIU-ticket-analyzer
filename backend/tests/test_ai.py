@@ -1,13 +1,15 @@
 """Unit tests for keyword fallbacks and confidence scoring."""
 
-from app.ai.classifier import fallback_category
+from app.ai.classifier import fallback_category_with_confidence
 from app.ai.confidence import build_confidence
 from app.ai.priority_detector import keyword_priority_score
 
 
 def test_fallback_category_login():
     text = "Title: Unable to login\nDescription: User cannot login after password reset."
-    assert fallback_category(text) == "Account"
+    category, score = fallback_category_with_confidence(text)
+    assert category == "Account"
+    assert score >= 0.68
 
 
 def test_keyword_priority_high():

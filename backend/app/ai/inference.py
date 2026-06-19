@@ -6,7 +6,7 @@ import asyncio
 import logging
 import time
 
-from app.ai.classifier import fallback_category
+from app.ai.classifier import fallback_category_with_confidence
 from app.ai.confidence import build_confidence
 from app.ai.hf_client import HuggingFaceClient
 from app.ai.priority_detector import keyword_priority_score
@@ -110,9 +110,9 @@ class InferenceEngine:
         )
 
     def _fallback_result(self, text: str, started: float) -> AnalysisResult:
-        category = fallback_category(text)
+        category, cat_score = fallback_category_with_confidence(text)
         priority, pri_kw = keyword_priority_score(text)
-        confidence = build_confidence(0.5, 0.5, pri_kw, "fallback")
+        confidence = build_confidence(cat_score, cat_score, pri_kw, "fallback")
         elapsed_ms = int((time.perf_counter() - started) * 1000)
         return AnalysisResult(
             category=category,

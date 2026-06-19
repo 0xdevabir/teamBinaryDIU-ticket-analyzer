@@ -19,8 +19,13 @@ SUMMARY_WEIGHT = 0.20
 SUMMARY_CONFIDENCE = {
     "local": 0.88,
     "api": 0.85,
-    "fallback": 0.55,
+    "fallback": 0.62,
 }
+
+
+def fallback_summary_confidence(category_score: float, priority_score: float) -> float:
+    """Heuristic summary confidence when ML summarization is unavailable."""
+    return round(min(0.55 + 0.25 * category_score + 0.15 * priority_score, 0.75), 4)
 
 
 @dataclass(frozen=True)
@@ -63,7 +68,10 @@ def build_confidence(
     inference_source: str,
 ) -> ConfidenceBreakdown:
     priority = blend_priority(priority_zero_shot, priority_keyword)
-    summary = score_summary(inference_source)
+    if inference_source == "fallback":
+        summary = fallback_summary_confidence(category_score, priority)
+    else:
+        summary = score_summary(inference_source)
     overall = score_overall(category_score, priority, summary)
     return ConfidenceBreakdown(
         category=round(category_score, 4),
