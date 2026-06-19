@@ -1,5 +1,7 @@
+# syntax=docker/dockerfile:1
 # =============================================================================
 # Ticket Analyzer — Frontend (React + Vite)
+# Cross-platform: linux/amd64 + linux/arm64 (official node/nginx images are multi-arch)
 # Targets: development | build | production
 # =============================================================================
 
@@ -7,6 +9,8 @@
 FROM node:20-alpine AS development
 
 WORKDIR /app
+
+ENV npm_config_update_notifier=false
 
 COPY package.json package-lock.json* ./
 RUN npm ci
@@ -24,6 +28,7 @@ WORKDIR /app
 
 ARG VITE_API_BASE_URL=/api/v1
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV npm_config_update_notifier=false
 
 COPY package.json package-lock.json* ./
 RUN npm ci
@@ -34,7 +39,7 @@ RUN npm run build
 # ── Production (nginx) ───────────────────────────────────────────────────────
 FROM nginx:1.27-alpine AS production
 
-RUN rm /etc/nginx/conf.d/default.conf
+RUN rm -f /etc/nginx/conf.d/default.conf
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html

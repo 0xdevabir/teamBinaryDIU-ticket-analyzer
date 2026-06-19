@@ -1,7 +1,15 @@
 # =============================================================================
-# Ticket Analyzer — Production stack
-# Run:  cp .env.example .env && docker compose up --build
+# Ticket Analyzer — Cross-platform Docker Compose
+# Works on: macOS (Intel + Apple Silicon), Linux, Windows (Docker Desktop / WSL2)
+#
+# Quick start:
+#   cp .env.example .env
+#   docker compose up --build
+#
+# Windows tip: if port 80 is blocked, set FRONTEND_PORT=8080 in .env
 # =============================================================================
+
+name: ticket-analyzer
 
 services:
   postgres:
@@ -13,6 +21,9 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ticket_secret}
       POSTGRES_DB: ${POSTGRES_DB:-ticket_analyzer}
       PGDATA: /var/lib/postgresql/data/pgdata
+      # Avoid locale issues across host OS
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -21,37 +32,38 @@ services:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER:-ticket_user} -d ${POSTGRES_DB:-ticket_analyzer}",
+          "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB",
         ]
       interval: 5s
       timeout: 5s
       retries: 10
-      start_period: 10s
+      start_period: 15s
     networks:
       - ticket-net
-    deploy:
-      resources:
-        limits:
-          memory: 512M
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
       target: production
+    image: ticket-analyzer-backend:latest
     container_name: ticket-analyzer-api
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-ticket_user}:${POSTGRES_PASSWORD:-ticket_secret}@postgres:5432/${POSTGRES_DB:-ticket_analyzer}
-      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost,http://localhost:80}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost,http://localhost:80,http://127.0.0.1,http://127.0.0.1:80}
       DEBUG: ${DEBUG:-false}
       AI_INFERENCE_MODE: ${AI_INFERENCE_MODE:-auto}
       HF_API_TOKEN: ${HF_API_TOKEN:-}
       HF_ZERO_SHOT_MODEL: ${HF_ZERO_SHOT_MODEL:-typeform/distilbert-base-uncased-mnli}
       HF_SUMMARIZATION_MODEL: ${HF_SUMMARIZATION_MODEL:-sshleifer/distilbart-cnn-12-6}
-      AI_REQUEST_TIMEOUT: ${AI_REQUEST_TIMEOUT:-30}
+      AI_REQUEST_TIMEOUT: ${AI_REQUEST_TIMEOUT:-60}
       SEED_ENABLED: ${SEED_ENABLED:-true}
       PRELOAD_MODELS_ON_STARTUP: ${PRELOAD_MODELS_ON_STARTUP:-false}
+      DB_WAIT_ATTEMPTS: ${DB_WAIT_ATTEMPTS:-30}
+      DB_WAIT_DELAY: ${DB_WAIT_DELAY:-2}
+    volumes:
+      - huggingface_cache:/app/.cache/huggingface
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     depends_on:
@@ -67,14 +79,10 @@ services:
         ]
       interval: 15s
       timeout: 5s
-      retries: 8
-      start_period: 60s
+      retries: 10
+      start_period: 90s
     networks:
       - ticket-net
-    deploy:
-      resources:
-        limits:
-          memory: 3G
 
   frontend:
     build:
@@ -83,6 +91,7 @@ services:
       target: production
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api/v1}
+    image: ticket-analyzer-frontend:latest
     container_name: ticket-analyzer-ui
     restart: unless-stopped
     ports:
@@ -95,16 +104,14 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 15s
+      start_period: 20s
     networks:
       - ticket-net
-    deploy:
-      resources:
-        limits:
-          memory: 128M
 
 volumes:
   postgres_data:
+    driver: local
+  huggingface_cache:
     driver: local
 
 networks:

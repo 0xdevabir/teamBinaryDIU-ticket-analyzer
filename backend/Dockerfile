@@ -1,38 +1,48 @@
+# syntax=docker/dockerfile:1
 # =============================================================================
 # Ticket Analyzer — Backend (FastAPI)
+# Cross-platform: linux/amd64 (Intel/Windows/Linux) + linux/arm64 (Apple Silicon)
 # Targets: development | production
 # =============================================================================
 
-FROM python:3.12-slim AS base
+FROM python:3.12-slim-bookworm AS base
 
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
     HF_HOME=/app/.cache/huggingface \
-    TRANSFORMERS_CACHE=/app/.cache/huggingface
+    TRANSFORMERS_CACHE=/app/.cache/huggingface \
+    HF_HUB_DISABLE_TELEMETRY=1
 
+# Runtime deps (works on amd64 + arm64 Debian bookworm)
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
       libpq5 \
       tini \
+      ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 
-# CPU-only PyTorch — no GPU required
-RUN pip install torch --index-url https://download.pytorch.org/whl/cpu \
+# CPU-only PyTorch — auto-selects wheel for host architecture (x86_64 / aarch64)
+RUN pip install --upgrade pip \
+    && pip install torch --index-url https://download.pytorch.org/whl/cpu \
     && pip install -r requirements.txt
 
 COPY alembic.ini alembic/ ./
 COPY app/ ./app/
-COPY scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
+COPY scripts/wait_for_db.py scripts/docker-entrypoint.sh ./scripts/
+RUN chmod +x ./scripts/docker-entrypoint.sh \
+    && cp ./scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh \
     && mkdir -p /app/.cache/huggingface
 
-RUN groupadd --gid 1000 app \
-    && useradd --uid 1000 --gid app --create-home app \
+# Non-root user (consistent UID across platforms)
+RUN groupadd --system --gid 1000 app 2>/dev/null || groupadd --gid 1000 app \
+    && useradd --system --uid 1000 --gid app --create-home app 2>/dev/null \
+       || useradd --uid 1000 --gid app --create-home app \
     && chown -R app:app /app
 
 USER app
@@ -48,7 +58,7 @@ ENTRYPOINT ["tini", "--"]
 FROM base AS development
 USER root
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libpq-dev \
+    && apt-get install -y --no-install-recommends libpq-dev gcc \
     && rm -rf /var/lib/apt/lists/*
 USER app
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

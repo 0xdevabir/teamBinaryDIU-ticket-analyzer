@@ -292,6 +292,10 @@ npm run dev
 
 ## Docker Setup
 
+Works on **macOS** (Intel + Apple Silicon), **Linux**, and **Windows** (Docker Desktop + WSL2).
+
+**Full cross-platform guide:** [docs/DOCKER_CROSS_PLATFORM.md](docs/DOCKER_CROSS_PLATFORM.md)
+
 ### Production (single command)
 
 ```bash

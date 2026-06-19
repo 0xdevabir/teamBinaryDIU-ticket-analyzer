@@ -1,0 +1,13 @@
+# Cross-platform line endings (Mac, Linux, Windows)
+* text=auto
+
+# Shell scripts must use LF inside Linux containers
+*.sh text eol=lf
+backend/scripts/docker-entrypoint.sh text eol=lf
+deploy/scripts/*.sh text eol=lf
+
+# Docker & config
+Dockerfile text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+.env* text eol=lf
