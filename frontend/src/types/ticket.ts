@@ -10,6 +10,12 @@ export interface Ticket {
   updated_at: string;
 }
 
+export interface TicketAnalyzeResponse extends Ticket {
+  inference_source?: string | null;
+  confidence_breakdown?: Record<string, number> | null;
+  processing_ms?: number | null;
+}
+
 export interface TicketCreate {
   title: string;
   description: string;

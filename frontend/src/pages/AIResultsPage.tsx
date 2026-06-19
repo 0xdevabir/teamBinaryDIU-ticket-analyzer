@@ -1,27 +1,56 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { ArrowLeft, LayoutDashboard } from "lucide-react";
 import type { AIResultView } from "../types/ai";
+import { useTicket } from "../hooks/useTickets";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import { ticketToAIResult } from "../utils/ticketToAIResult";
 import AIResultsPanel from "../components/tickets/AIResultsPanel";
 import Button from "../components/ui/Button";
 import PageHeader from "../components/ui/PageHeader";
+import Spinner from "../components/ui/Spinner";
+import EmptyState from "../components/ui/EmptyState";
 
 export default function AIResultsPage() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
-  const result = location.state?.result as AIResultView | undefined;
+  const stateResult = location.state?.result as AIResultView | undefined;
+  const { ticket, loading, error } = useTicket(id, !stateResult);
 
-  if (!result) {
+  useDocumentTitle("AI Analysis");
+
+  const fetchedResult = ticket ? ticketToAIResult(ticket) : null;
+  const result = stateResult ?? fetchedResult;
+  const ticketId = id ?? result?.ticketId;
+
+  if (!stateResult && id && loading) {
+    return <Spinner label="Loading analysis..." />;
+  }
+
+  if (error) {
     return (
-      <div className="mx-auto max-w-2xl py-16 text-center">
-        <p className="text-slate-500">No analysis results available.</p>
-        <Link to="/create" className="mt-4 inline-block">
-          <Button>Create a ticket</Button>
-        </Link>
+      <div className="mx-auto max-w-2xl">
+        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
       </div>
     );
   }
 
-  const ticketId = id ?? result.ticketId;
+  if (!result) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <EmptyState
+          title="No analysis results"
+          description={ticket && !ticket.category
+            ? "This ticket has not been analyzed yet."
+            : "Create a ticket or run analysis to see results."}
+          action={
+            <Link to={ticketId ? `/tickets/${ticketId}` : "/create"}>
+              <Button>{ticketId ? "View Ticket" : "Create Ticket"}</Button>
+            </Link>
+          }
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">

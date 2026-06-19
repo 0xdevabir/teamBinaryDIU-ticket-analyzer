@@ -57,7 +57,7 @@ async def delete_ticket(ticket_id: uuid.UUID, service: TicketService = Depends(g
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@router.post("/{ticket_id}/analyze", response_model=TicketResponse)
+@router.post("/{ticket_id}/analyze", response_model=TicketAnalyzeResponse)
 async def analyze_ticket(
     ticket_id: uuid.UUID,
     service: AnalysisService = Depends(get_analysis_service),

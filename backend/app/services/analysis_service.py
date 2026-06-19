@@ -41,12 +41,14 @@ class AnalysisService:
 
     @staticmethod
     def _to_analyze_response(ticket: Ticket, result, processing_ms: int) -> TicketAnalyzeResponse:
+        cat = str(ticket.category) if ticket.category else None
+        pri = str(ticket.priority) if ticket.priority else None
         return TicketAnalyzeResponse(
             id=ticket.id,
             title=ticket.title,
             description=ticket.description,
-            category=display_category(ticket.category) if ticket.category else None,
-            priority=display_priority(ticket.priority) if ticket.priority else None,
+            category=display_category(cat) if cat else None,
+            priority=display_priority(pri) if pri else None,
             summary=ticket.summary,
             ai_confidence=float(ticket.ai_confidence) if ticket.ai_confidence is not None else None,
             created_at=ticket.created_at,

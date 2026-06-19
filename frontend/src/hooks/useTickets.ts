@@ -29,13 +29,13 @@ export function useTickets(filters: TicketFilters) {
   return { tickets, total, loading, error, refetch: fetchTickets };
 }
 
-export function useTicket(id: string | undefined) {
+export function useTicket(id: string | undefined, enabled = true) {
   const [ticket, setTicket] = useState<Ticket | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
 
   const fetchTicket = useCallback(async () => {
-    if (!id) return;
+    if (!id || !enabled) return;
     setLoading(true);
     setError(null);
     try {
@@ -45,7 +45,7 @@ export function useTicket(id: string | undefined) {
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, enabled]);
 
   useEffect(() => {
     fetchTicket();

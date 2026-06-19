@@ -1,5 +1,5 @@
 import { http } from "./axios";
-import type { Ticket, TicketCreate, TicketFilters, TicketListResponse } from "../types/ticket";
+import type { Ticket, TicketAnalyzeResponse, TicketCreate, TicketFilters, TicketListResponse } from "../types/ticket";
 
 export const ticketsApi = {
   create: (data: TicketCreate) =>
@@ -18,5 +18,5 @@ export const ticketsApi = {
     http.delete(`/tickets/${id}`),
 
   analyze: (id: string) =>
-    http.post<Ticket>(`/tickets/${id}/analyze`).then((r) => r.data),
+    http.post<TicketAnalyzeResponse>(`/tickets/${id}/analyze`).then((r) => r.data),
 };

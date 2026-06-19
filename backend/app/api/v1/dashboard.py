@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 
+from app.config import settings
 from app.dependencies import get_analysis_service, get_ticket_service
 from app.schemas.dashboard import DashboardStats
 from app.schemas.ticket import TicketCreate, TicketResponse
@@ -48,6 +49,11 @@ async def seed_demo_tickets(
     ticket_service: TicketService = Depends(get_ticket_service),
     analysis_service: AnalysisService = Depends(get_analysis_service),
 ):
+    if not settings.seed_enabled:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Demo seeding is disabled in this environment",
+        )
     created = []
     for data in DEMO_TICKETS:
         ticket = await ticket_service.create(data)
