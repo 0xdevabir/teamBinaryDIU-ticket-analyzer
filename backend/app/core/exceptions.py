@@ -30,3 +30,10 @@ class ValidationError(AppError):
 
     def __init__(self, message: str) -> None:
         super().__init__(message)
+
+
+class InferenceError(AppError):
+    status_code = 503
+
+    def __init__(self, message: str = "AI inference failed") -> None:
+        super().__init__(message)
