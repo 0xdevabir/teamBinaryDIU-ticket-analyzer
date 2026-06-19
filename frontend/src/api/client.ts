@@ -23,6 +23,10 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     throw new Error(parseErrorDetail(error) || response.statusText);
   }
 
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
   return response.json() as Promise<T>;
 }
 
@@ -41,8 +45,13 @@ export const api = {
 
   getTicket: (id: string) => request<Ticket>(`/tickets/${id}`),
 
-  reanalyzeTicket: (id: string) =>
-    request<Ticket>(`/tickets/${id}/reanalyze`, { method: "POST" }),
+  updateTicket: (id: string, data: Partial<TicketCreate>) =>
+    request<Ticket>(`/tickets/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
+
+  deleteTicket: (id: string) => request<void>(`/tickets/${id}`, { method: "DELETE" }),
+
+  analyzeTicket: (id: string) =>
+    request<Ticket>(`/tickets/${id}/analyze`, { method: "POST" }),
 
   getDashboardStats: () => request<DashboardStats>("/dashboard/stats"),
 

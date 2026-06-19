@@ -10,6 +10,11 @@ class TicketCreate(BaseModel):
     description: str = Field(..., min_length=10, max_length=5000)
 
 
+class TicketUpdate(BaseModel):
+    title: str | None = Field(None, min_length=3, max_length=200)
+    description: str | None = Field(None, min_length=10, max_length=5000)
+
+
 class TicketResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

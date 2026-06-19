@@ -14,6 +14,7 @@ class Base(DeclarativeBase):
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    """Deprecated: use app.dependencies.get_db instead."""
     async with async_session() as session:
         try:
             yield session

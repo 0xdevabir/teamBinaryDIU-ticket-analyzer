@@ -18,7 +18,8 @@ export default function SubmitTicket() {
     setError(null);
 
     try {
-      const ticket = await api.createTicket({ title, description });
+      const created = await api.createTicket({ title, description });
+      const ticket = await api.analyzeTicket(created.id);
       setResult(ticket);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Submission failed");

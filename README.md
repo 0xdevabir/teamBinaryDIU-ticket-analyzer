@@ -65,10 +65,12 @@ npm run dev
 | GET | `/api/v1/health` | Health check |
 | GET | `/api/v1/health/ready` | DB readiness |
 | GET | `/api/v1/categories` | List categories |
-| POST | `/api/v1/tickets` | Submit & analyze ticket |
+| POST | `/api/v1/tickets` | Create ticket |
 | GET | `/api/v1/tickets` | List tickets |
 | GET | `/api/v1/tickets/{id}` | Ticket detail |
-| POST | `/api/v1/tickets/{id}/reanalyze` | Re-run analysis |
+| PATCH | `/api/v1/tickets/{id}` | Update ticket |
+| DELETE | `/api/v1/tickets/{id}` | Delete ticket |
+| POST | `/api/v1/tickets/{id}/analyze` | Run AI analysis |
 | GET | `/api/v1/dashboard/stats` | Dashboard metrics |
 | GET | `/api/v1/dashboard/recent` | Recent tickets |
 | POST | `/api/v1/dashboard/seed` | Load demo tickets |
@@ -81,8 +83,9 @@ npm run dev
 │   │   ├── api/      # Route handlers
 │   │   ├── models/   # SQLAlchemy models
 │   │   ├── schemas/  # Pydantic schemas
-│   │   ├── ai/       # Hugging Face pipeline
-│   │   ├── services/ # Business logic
+│   │   ├── repositories/ # Data access layer
+│   │   ├── services/     # Business logic
+│   │   ├── ai/           # Hugging Face pipeline
 │   └── alembic/      # DB migrations
 ├── frontend/         # React (Vite) dashboard
 └── docker-compose.yml
