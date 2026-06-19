@@ -3,7 +3,9 @@ __pycache__
 .venv
 venv
 .env
+.env.*
 .git
+.gitignore
 .pytest_cache
 .mypy_cache
 .coverage
@@ -12,3 +14,6 @@ htmlcov
 .cache
 dist
 build
+tests
+*.md
+.DS_Store

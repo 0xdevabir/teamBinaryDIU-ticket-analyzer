@@ -13,19 +13,18 @@ cp .env.example .env
 # Optional: add HF_API_TOKEN for real AI analysis (works without it using fallback rules)
 ```
 
-### 2. Run with Docker (production build)
+### 2. Run with Docker (production)
 
 ```bash
 docker compose up --build
 ```
 
-| Service  | URL |
-|----------|-----|
-| Frontend | http://localhost:80 |
-| Backend  | http://localhost:8000 |
-| AI Service | http://localhost:8001 |
-| API Docs | http://localhost:8000/docs |
-| AI Docs | http://localhost:8001/docs |
+| Service    | URL |
+|------------|-----|
+| Frontend   | http://localhost:80 |
+| Backend    | http://localhost:8000 |
+| API Docs   | http://localhost:8000/docs |
+| PostgreSQL | localhost:5432 |
 
 ### 3. Run in development mode (hot reload)
 
@@ -74,7 +73,6 @@ npm run dev
 | DELETE | `/api/v1/tickets/{id}` | Delete ticket |
 | POST | `/api/v1/tickets/{id}/analyze` | Run AI analysis (persisted) |
 | POST | `/api/v1/ai/analyze` | Stateless AI analysis |
-| POST | `http://localhost:8001/analyze` | AI microservice |
 | GET | `/api/v1/dashboard/stats` | Dashboard metrics |
 | GET | `/api/v1/dashboard/recent` | Recent tickets |
 | POST | `/api/v1/dashboard/seed` | Load demo tickets |
@@ -109,7 +107,21 @@ Models (CPU-friendly, ~550 MB total):
 - `typeform/distilbert-base-uncased-mnli` — category + priority
 - `sshleifer/distilbart-cnn-12-6` — summary
 
-## Demo Flow
+## Production Deployment (Ubuntu VM)
+
+Full step-by-step guide with Nginx reverse proxy and Let's Encrypt SSL:
+
+**[deploy/DEPLOYMENT.md](deploy/DEPLOYMENT.md)**
+
+Quick deploy on a configured VM:
+
+```bash
+cp deploy/.env.production.example .env   # edit DOMAIN, passwords
+bash deploy/scripts/deploy.sh
+sudo bash deploy/scripts/nginx-http-setup.sh
+sudo bash deploy/scripts/ssl-setup.sh
+```
+
 
 1. Open the dashboard
 2. Submit: *"URGENT: Payment failed but money was deducted from my card"*
