@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass(frozen=True)
@@ -7,3 +7,5 @@ class AnalysisResult:
     priority: str
     summary: str
     ai_confidence: float
+    confidence_breakdown: dict[str, float] = field(default_factory=dict)
+    inference_source: str = "fallback"

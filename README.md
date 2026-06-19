@@ -91,11 +91,19 @@ npm run dev
 └── docker-compose.yml
 ```
 
-## Hugging Face Setup
+## Hugging Face / AI Setup
 
-1. Create a token at https://huggingface.co/settings/tokens
-2. Add to `.env`: `HF_API_TOKEN=hf_your_token`
-3. Without a token, the app uses keyword-based fallback classification
+See `backend/app/ai/AI_DESIGN.md` for full design.
+
+| Mode | Config | Token |
+|------|--------|-------|
+| `local` | `AI_INFERENCE_MODE=local` | Not required |
+| `api` | `AI_INFERENCE_MODE=api` + `HF_API_TOKEN` | Required |
+| `auto` | `AI_INFERENCE_MODE=auto` (default) | Optional |
+
+Models (CPU-friendly, ~550 MB total):
+- `typeform/distilbert-base-uncased-mnli` — category + priority
+- `sshleifer/distilbart-cnn-12-6` — summary
 
 ## Demo Flow
 
